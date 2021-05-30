@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Authentication</title>
+</head>
+<body>
+<form action="/login" method="POST">
+    <div>
+        <output for="username">Login</output>
+        <input type="text" name="username" id="username"/>
+    </div>
+    <div>
+        <output for="password">Password</output>
+        <input type="password" name="password" id="password"/>
+    </div>
+    <div>
+        <input type="hidden" name="_csrf" th:value="${_csrf.getToken()}">
+    </div>
+    <div>
+        <button type="submit">Sign In</button>
+    </div>
+</form>
+</body>
+</html>
