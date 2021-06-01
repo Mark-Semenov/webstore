@@ -3,6 +3,7 @@ package ru.gb.store.entities;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -14,7 +15,7 @@ public class User {
     private Long id;
     private String firstname;
     private String lastname;
-    private Byte age;
+    private LocalDate age;
     private String login;
     private String password;
     private String email;
@@ -27,5 +28,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private List<Role> roles;
+
+    @OneToOne
+    private Cart cart;
 
 }

@@ -7,17 +7,26 @@
           integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
           crossorigin="anonymous"/>
     <link th:href="@{/css/style.css}" rel="stylesheet"/>
-    <title>Admin panel</title>
+    <title th:text="'User'"/>
 </head>
-
 <body>
 
-<h1>Hello Admin</h1>
-<div>
-    <h5>
-        <a th:href="@{${#request.getServletPath()} + '/new_user'}">Create user</a>
-    </h5>
-</div>
+
+<form method="post" th:object="${order}" th:action="@{/cart/order/checkout}">
+    <div>
+        <input th:field="*{address}">
+    </div>
+    <div>
+        <input type="hidden" th:field="*{totalSum}" th:value="${totalSum}">
+    </div>
+    <div>
+        <h3 th:text="'Total sum: ' + ${totalSum}"/>
+    </div>
+    <div>
+        <button type="submit">Buy</button>
+    </div>
+
+</form>
 
 </body>
 </html>
