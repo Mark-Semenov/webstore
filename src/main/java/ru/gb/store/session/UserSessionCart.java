@@ -1,4 +1,4 @@
-package ru.gb.store.dto;
+package ru.gb.store.session;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 @Log4j2
+@Data
 @Component
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-@Data
-public class CartDTO {
+public class UserSessionCart {
 
     private List<Product> productCart;
     private Map<Product, Integer> productCount;
