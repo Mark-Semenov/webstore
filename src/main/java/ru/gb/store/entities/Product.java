@@ -1,11 +1,12 @@
 package ru.gb.store.entities;
 
 import lombok.Data;
-import org.springframework.stereotype.Component;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -25,6 +26,7 @@ public class Product {
     private String image;
 
     @ManyToMany
+    @ToString.Exclude
     @JoinTable(
             name = "product_category",
             joinColumns = @JoinColumn(name = "product_id"),
@@ -33,4 +35,16 @@ public class Product {
     private List<Category> category;
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return id.equals(product.id) && name.equals(product.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 }

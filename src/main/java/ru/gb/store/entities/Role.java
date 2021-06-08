@@ -22,7 +22,7 @@ public class Role implements GrantedAuthority {
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<Role> roles;
+    private List<User> users;
 
     @Override
     public String getAuthority() {
