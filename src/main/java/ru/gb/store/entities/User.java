@@ -1,6 +1,7 @@
 package ru.gb.store.entities;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.time.LocalDate;
