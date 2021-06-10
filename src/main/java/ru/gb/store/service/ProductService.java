@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.gb.store.entities.Category;
 import ru.gb.store.entities.Product;
 import ru.gb.store.repositories.ProductRepository;
@@ -39,6 +40,11 @@ public class ProductService {
 
     public Product findProductById(Long id) {
         return productRepository.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public void saveProduct(Product product){
+        productRepository.save(product);
     }
 
 

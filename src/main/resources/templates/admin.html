@@ -15,7 +15,12 @@
 <h1>Hello Admin</h1>
 <div>
     <h5>
-        <a th:href="@{${#request.getServletPath()} + '/new_user'}">Create user</a>
+        <div>
+            <a th:href="@{${#request.getServletPath()} + '/new_user'}">Create user</a>
+        </div>
+        <div>
+            <a th:href="@{${#request.getServletPath()} + '/new_product'}">Add new product</a>
+        </div>
     </h5>
 </div>
 
