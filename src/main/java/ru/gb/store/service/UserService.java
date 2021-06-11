@@ -6,7 +6,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ru.gb.store.dto.UserDTO;
 import ru.gb.store.entities.User;
+import ru.gb.store.repositories.RoleRepository;
 import ru.gb.store.repositories.UserRepository;
 
 @Component
@@ -14,6 +16,8 @@ import ru.gb.store.repositories.UserRepository;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+
 
     @Override
     @Transactional
@@ -32,8 +36,13 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void addUser(User user) {
-        userRepository.save(user);
+    public void addUser(UserDTO user) {
+        User u = new User();
+        u.setLogin(user.getLogin());
+        u.setPassword(user.getPassword());
+        u.setEmail(user.getEmail());
+        u.setRoles(roleRepository.findByName(user.getRole()));
+        userRepository.save(u);
     }
 
 }

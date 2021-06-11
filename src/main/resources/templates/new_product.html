@@ -12,7 +12,7 @@
 <body>
 
 <div class="container">
-    <form th:action="@{/admin/new_product}" th:object="${product}" method="post">
+    <form th:action="@{/admin/new_product}" th:object="${product}" method="post" enctype="multipart/form-data">
         <input type="hidden" th:field="*{id}">
         <div class="input-group mb-3">
             <span class="input-group-text" id="inputGroup-sizing-default">Name</span>
@@ -35,18 +35,29 @@
                    aria-describedby="inputGroup-sizing-default3">
         </div>
 
-        <select th:object="${category}" th:field="*{name}"
-                class="form-select"
-                aria-label="Default select example">
-            <option th:each="c : ${categories}"
-                    th:value="${c.name}"
-                    th:text="${c.name}"/>
-        </select>
+        <div class="mb-3">
+            <label for="formFile" class="form-label">Product image</label>
+            <input class="form-control" multiple="multiple" type="file" id="formFile" name="file"/>
+        </div>
+
+
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupSelect">Category</label>
+            <select class="form-select"
+                    id="inputGroupSelect" th:field="${category}">
+                <option th:each="c : ${categories}"
+                        th:text="${c}"
+                        th:value="${c}"/>
+            </select>
+        </div>
+
+
         <div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
 
     </form>
+
 
 </div>
 

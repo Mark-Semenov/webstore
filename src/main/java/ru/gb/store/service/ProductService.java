@@ -43,7 +43,7 @@ public class ProductService {
     }
 
     @Transactional
-    public void saveProduct(Product product){
+    public void saveProduct(Product product) {
         productRepository.save(product);
     }
 

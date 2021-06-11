@@ -80,7 +80,6 @@ public class IndexController {
         model.addAttribute("cart", userSessionCart);
         model.addAttribute("search", productName);
 
-
         return "index";
     }
 
