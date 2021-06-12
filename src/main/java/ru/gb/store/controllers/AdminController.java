@@ -71,14 +71,13 @@ public class AdminController {
     @PostMapping("/new_product")
     public String addNewProduct(MultipartFile file, Product product, Category category, Img image) throws IOException {
         List<Category> c = categoryService.getCategoryByName(category.getName());
+//        categoryService.getCategoryByName(category.getName()).iterator().next().setProducts(List.of(product));
         image.setName(file.getOriginalFilename());
         image.setContent(file.getBytes());
         product.setImage(image.getName());
         Files.write(Path.of("src\\main\\resources\\static\\images\\".concat(image.getName())).toAbsolutePath(), image.getBytes());
         product.setCategory(c);
-        category.setProducts(List.of(product));
         productService.saveProduct(product);
-        categoryService.saveCategory(category);
         product = null;
         return "new_product";
     }

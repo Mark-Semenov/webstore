@@ -41,10 +41,10 @@
         </div>
 
 
-        <div class="input-group mb-3">
+        <div class="input-group mb-3" th:object="${category}" th:field="*{name}">
             <label class="input-group-text" for="inputGroupSelect">Category</label>
             <select class="form-select"
-                    id="inputGroupSelect" th:field="${category}">
+                    id="inputGroupSelect">
                 <option th:each="c : ${categories}"
                         th:text="${c}"
                         th:value="${c}"/>
