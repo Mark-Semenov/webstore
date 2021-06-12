@@ -7,18 +7,21 @@
           integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
           crossorigin="anonymous"/>
     <link th:href="@{/css/style.css}" rel="stylesheet"/>
-    <title>Create user</title>
+    <title>Add new product</title>
 </head>
 <body>
 
 <div class="container">
     <form th:action="@{/admin/new_product}" th:object="${product}" method="post" enctype="multipart/form-data">
         <input type="hidden" th:field="*{id}">
+
         <div class="input-group mb-3">
             <span class="input-group-text" id="inputGroup-sizing-default">Name</span>
-            <input th:field="*{name}" type="text" class="form-control" aria-label="Sizing example input"
+            <input th:field="*{name}" id="product-name" type="text" class="form-control"
+                   aria-label="Sizing example input"
                    aria-describedby="inputGroup-sizing-default">
         </div>
+
         <div class="input-group mb-3">
             <span class="input-group-text" id="inputGroup-sizing-default1">Description</span>
             <input th:field="*{description}" type="text" class="form-control" aria-label="Sizing example input"
@@ -41,13 +44,14 @@
         </div>
 
 
-        <div class="input-group mb-3" th:object="${category}" th:field="*{name}">
+        <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelect">Category</label>
             <select class="form-select"
-                    id="inputGroupSelect">
-                <option th:each="c : ${categories}"
-                        th:text="${c}"
-                        th:value="${c}"/>
+                    id="inputGroupSelect"
+                    th:name="categoryName">
+                <option th:each="category : ${categories}"
+                        th:text="${category}"
+                        th:value="${category}"/>
             </select>
         </div>
 

@@ -62,24 +62,30 @@ public class AdminController {
     @GetMapping("/new_product")
     public String createProduct(Model model) {
         model.addAttribute("product", new Product());
-        model.addAttribute("category", new Category());
         model.addAttribute("image", new Img());
         model.addAttribute("categories", categoryService.getNamesOfCategories());
         return "new_product";
     }
 
     @PostMapping("/new_product")
-    public String addNewProduct(MultipartFile file, Product product, Category category, Img image) throws IOException {
-        List<Category> c = categoryService.getCategoryByName(category.getName());
-//        categoryService.getCategoryByName(category.getName()).iterator().next().setProducts(List.of(product));
-        image.setName(file.getOriginalFilename());
-        image.setContent(file.getBytes());
-        product.setImage(image.getName());
-        Files.write(Path.of("src\\main\\resources\\static\\images\\".concat(image.getName())).toAbsolutePath(), image.getBytes());
-        product.setCategory(c);
+    public String addNewProduct(String categoryName, MultipartFile file, Product product, Img image) throws IOException {
+        Category category = categoryService.getCategoryByName(categoryName);
+        setAndWriteImage(file, product, image);
+        product.setCategory(List.of(category));
         productService.saveProduct(product);
+        category.setProducts(List.of(product));
         product = null;
+        category = null;
         return "new_product";
+    }
+
+    private void setAndWriteImage(MultipartFile file, Product product, Img image) throws IOException {
+        if (!file.isEmpty()) {
+            image.setName(file.getOriginalFilename());
+            image.setContent(file.getBytes());
+            product.setImage(image.getName());
+            Files.write(Path.of("src\\main\\resources\\static\\images\\".concat(image.getName())).toAbsolutePath(), image.getBytes());
+        }
     }
 
 

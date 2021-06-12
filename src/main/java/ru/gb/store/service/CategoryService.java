@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.gb.store.entities.Category;
 import ru.gb.store.repositories.CategoryRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,8 +20,12 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public List<Category> getCategoryByName(String name) {
+    public Category getCategoryByName(String name) {
         return categoryRepository.findCategoryByName(name);
+    }
+
+    public Category getById(Long id) {
+        return categoryRepository.findCategoryById(id);
     }
 
     public List<String> getNamesOfCategories() {
