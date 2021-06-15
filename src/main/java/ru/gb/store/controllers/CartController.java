@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.gb.store.dto.CartDTO;
 import ru.gb.store.entities.Order;
 import ru.gb.store.entities.Product;
 import ru.gb.store.entities.User;
@@ -27,7 +26,6 @@ public class CartController {
     private final ProductService productService;
     private final UserService userService;
     private final CartService cartService;
-    private final CartDTO cartDTO;
     private Product product;
 
     @GetMapping("/add")
@@ -37,9 +35,8 @@ public class CartController {
                                    @RequestParam(required = false, defaultValue = "", name = "search") String search) {
 
         product = productService.findProductById(id);
-        if (cartDTO.getProductCart().stream().noneMatch(product1 -> product1.equals(product))) {
-            cartService.addProduct(product);
-        }
+        cartService.addProduct(product);
+
         model.addAttribute("productId", id);
         return "redirect:/?page=" + page + "&search=" + search;
 
@@ -54,15 +51,15 @@ public class CartController {
             model.addAttribute("userId", user.getId());
         }
 
-        model.addAttribute("cart", cartDTO);
-        model.addAttribute("prodInCart", cartDTO.getProductCart());
+        model.addAttribute("cart", cartService.getUserSessionCart());
+        model.addAttribute("prodInCart", cartService.getUserSessionCart().getProductCart());
         return "cart";
     }
 
     @GetMapping("/delete")
     public String deleteProdFromCart(Model model, @RequestParam(name = "id", required = false) Long prodId) {
         cartService.deleteProduct(cartService.getProductById(prodId));
-        model.addAttribute("cart", cartDTO);
+        model.addAttribute("cart", cartService.getUserSessionCart());
         return "redirect:/cart";
     }
 
@@ -71,7 +68,7 @@ public class CartController {
     public String buyProducts(Model model) {
         Order order = new Order();
         model.addAttribute("order", order);
-        model.addAttribute("totalSum", cartDTO.getTotalSum());
+        model.addAttribute("totalSum", cartService.getUserSessionCart().getTotalSum());
         return "order";
     }
 

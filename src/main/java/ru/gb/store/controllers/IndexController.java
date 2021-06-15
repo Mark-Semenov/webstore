@@ -10,7 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.gb.store.dto.CartDTO;
+import ru.gb.store.session.UserSessionCart;
 import ru.gb.store.entities.Category;
 import ru.gb.store.entities.Product;
 import ru.gb.store.service.CategoryService;
@@ -26,7 +26,7 @@ public class IndexController {
     private final ProductService productService;
     private final CategoryService categoryService;
     private Page<Product> products;
-    private final CartDTO cartDTO;
+    private final UserSessionCart userSessionCart;
 
 
     @GetMapping("/login")
@@ -55,8 +55,8 @@ public class IndexController {
         model.addAttribute("pageable", productService.getPageable());
         model.addAttribute("categories", categoryService.getCategories());
         model.addAttribute("filter", filter);
-        model.addAttribute("cart", cartDTO);
-        log.info("размер корзины " + cartDTO.getProductCart().size());
+        model.addAttribute("cart", userSessionCart);
+        log.info("размер корзины " + userSessionCart.getProductCart().size());
         return "index";
     }
 
@@ -77,9 +77,8 @@ public class IndexController {
         model.addAttribute("products", products);
         model.addAttribute("categories", categoryService.getCategories());
         model.addAttribute("pages", productService.getPages());
-        model.addAttribute("cart", cartDTO);
+        model.addAttribute("cart", userSessionCart);
         model.addAttribute("search", productName);
-
 
         return "index";
     }

@@ -3,33 +3,90 @@
     padding: 0;
 }
 
-.top-menu{
+.top-menu {
     display: flex;
     justify-content: space-between;
 }
 
-.container{
+.container {
     max-width: 1280px;
     margin: 0 auto;
 }
 
-.logo{
+
+.login-page-container {
+    display: flex;
+    flex-direction: column;
+    border: darkgray solid 1px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding: 15px;
+    max-width: 400px;
+    margin: 50px;
+}
+
+.sign-up:active {
+    background-color: teal;
+}
+
+.forgot:active {
+    background-color: teal;
+}
+
+.login-field:focus {
+    box-shadow: 0 0 10px teal;
+    border: teal 1px solid;
+}
+
+.pas-field:focus {
+    box-shadow: 0 0 10px teal;
+    border: teal 1px solid;
+}
+
+.sign-button {
+    background-color: teal;
+    border: teal 1px solid;
+}
+
+.sign-button:hover {
+    background-color: #039797;
+    border: #039797 1px solid;
+}
+
+.remember-check-box {
+    border: teal 1px solid;
+}
+
+.remember-check-box:focus {
+    box-shadow: none;
+    border: teal 1px solid;
+}
+
+.remember-check-box:checked {
+    background-color: #039797;
+    border: teal 1px solid;
+    box-shadow: none;
+}
+
+.logo {
 
     padding-right: 100px;
 }
 
 
-.products{
+.products {
     display: flex;
     padding-top: 100px;
     padding-bottom: 100px;
     min-height: 80vh;
 }
-.products-cards{
+
+.products-cards {
     min-height: 70vh;
 
 }
-.product-card{
+
+.product-card {
     display: flex;
     justify-content: space-around;
     margin: 50px;
@@ -39,48 +96,49 @@
 
 }
 
-.filter-options{
+.filter-options {
     display: flex;
     flex-direction: column;
     max-width: 250px;
     padding-right: 100px;
 }
 
-.footer{
+.footer {
     height: 300px;
     background-color: #1f1f1f;
 }
 
-.pagination{
+.pagination {
     padding-top: 50px;
 }
 
-.search{
+.search {
     padding-left: 10px;
     width: 500px;
 }
 
-.cart-image{
+.cart-image {
     display: flex;
     padding-left: 200px;
 }
-.cart-png{
+
+.cart-png {
     width: 50px;
     position: relative;
 }
 
-.cart-point-img{
+.cart-point-img {
     width: 20px;
     position: absolute;
 }
 
-.cart_prod_count{
+.cart_prod_count {
     position: absolute;
     box-sizing: border-box;
     color: aliceblue;
 }
 
-.login-form{
+.login-form {
     display: flex;
     flex-direction: column;
     justify-content: center;

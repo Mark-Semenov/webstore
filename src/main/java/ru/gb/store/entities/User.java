@@ -1,12 +1,15 @@
 package ru.gb.store.entities;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -20,6 +23,24 @@ public class User {
     private String password;
     private String email;
     private Integer phone;
+
+    public User(String firstname, String lastname, LocalDate age, String login, String password, String email, Integer phone, List<Role> roles) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.age = age;
+        this.login = login;
+        this.password = password;
+        this.email = email;
+        this.phone = phone;
+        this.roles = roles;
+    }
+
+    public User(String login, String password, String email, List<Role> roles) {
+        this.login = login;
+        this.password = password;
+        this.email = email;
+        this.roles = roles;
+    }
 
     @ManyToMany
     @JoinTable(

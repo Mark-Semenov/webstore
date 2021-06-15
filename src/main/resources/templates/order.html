@@ -11,22 +11,25 @@
 </head>
 <body>
 
+<div class="container">
 
-<form method="post" th:object="${order}" th:action="@{/cart/order/checkout}">
-    <div>
-        <input th:field="*{address}">
-    </div>
-    <div>
-        <input type="hidden" th:field="*{totalSum}" th:value="${totalSum}">
-    </div>
-    <div>
-        <h3 th:text="'Total sum: ' + ${totalSum}"/>
-    </div>
-    <div>
-        <button type="submit">Buy</button>
-    </div>
 
-</form>
+    <form method="post" th:object="${order}" th:action="@{/cart/order/checkout}">
+        <div>
+            <input th:field="*{address}">
+        </div>
+        <div>
+            <input type="hidden" th:field="*{totalSum}" th:value="${totalSum}">
+        </div>
+        <div>
+            <h3 th:text="'Total sum: ' + ${totalSum}"/>
+        </div>
+        <div>
+            <button type="submit">Buy</button>
+        </div>
+
+    </form>
+</div>
 
 </body>
 </html>
