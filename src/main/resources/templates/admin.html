@@ -12,17 +12,138 @@
 
 <body>
 
-<h1>Hello Admin</h1>
-<div>
-    <h5>
-        <div>
-            <a th:href="@{${#request.getServletPath()} + '/new_user'}">Create user</a>
-        </div>
-        <div>
-            <a th:href="@{${#request.getServletPath()} + '/new_product'}">Add new product</a>
-        </div>
-    </h5>
+<div class="admin-top-menu">
+    <ul class="nav justify-content-end">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+        </li>
+        <li>
+            <a class="nav-link" th:href="@{${#httpServletRequest.getContextPath()} + '/logout'}">Exit</a>
+        </li>
+    </ul>
 </div>
+<div class="wrapper">
+    <div class="admin-panel-body">
+        <div class="left-side">
+
+            <div th:each="block : ${blocks}">
+                <h5 class="left-heading" th:text="${block.title}"/>
+                <div>
+                    <a th:each="url : ${block.getAdminURL()}"
+                       th:href="@{${#httpServletRequest.getContextPath()} + ${url.url}}"
+                       class="nav-link" th:text="${url.action}"/>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="right-side">
+            <div class="add-user-form" th:if="${#request.getServletPath().equals('/admin/new_user')}">
+                <div>
+                    <form th:action="@{/admin/new_user}" th:object="${userDTO}" method="post">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Login</span>
+                            <input required="required" th:field="*{login}" type="text" class="form-control">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Email</span>
+                            <input th:field="*{email}" type="email" class="form-control" required="required"
+                                   id="exampleInputEmail" aria-describedby="emailHelp">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Password</span>
+                            <input th:field="*{password}" type="password" class="form-control"
+                                   id="exampleInputPassword" required="required">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Role</span>
+                            <select th:object="${role}" th:field="*{name}" class="form-select"
+                                    aria-label="Default select example" required="required">
+                                <option th:each="r : ${roles}"
+                                        th:value="${r}"
+                                        th:text="${r}"/>
+                            </select>
+                        </div>
+
+                        <div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="add-product-form" th:if="${#request.getServletPath().equals('/admin/new_product')}">
+                <div>
+                    <form th:action="@{/admin/new_product}" th:object="${product}" method="post"
+                          enctype="multipart/form-data">
+                        <input type="hidden" th:field="*{id}">
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Name</span>
+                            <input th:field="*{name}" id="product-name" type="text" class="form-control">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Description</span>
+                            <input th:field="*{description}" type="text" class="form-control">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Status</span>
+                            <input th:field="*{status}" type="text" class="form-control">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Price</span>
+                            <input th:field="*{price}" type="text" class="form-control">
+                        </div>
+                        <div>
+                            <h5>Choice picture</h5>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input class="form-control" multiple="multiple" type="file" id="formFile" name="file"/>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Category</span>
+                            <select class="form-select" th:name="categoryName">
+                                <option th:each="category : ${categories}"
+                                        th:text="${category}"
+                                        th:value="${category}"/>
+                            </select>
+                        </div>
+
+                        <div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<footer>
+    <div>
+
+    </div>
+</footer>
+
 
 </body>
 </html>

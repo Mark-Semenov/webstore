@@ -11,45 +11,70 @@
 </head>
 <body>
 
-<div class="container products">
+<div class="container">
 
-    <div class="row row-cols-3 products-cards">
-        <h3 th:if="${!cart.productCart.isEmpty()}">Корзина</h3>
-        <h3 th:if="${cart.productCart.isEmpty()}">Корзина пуста</h3>
-        <div class="col" th:each="product : ${prodInCart}">
-            <div class="col-s4 product-card">
-                <div class="card " style="width: 18rem;">
-                    <img th:src="@{'/images/'+ ${product.image}}" class="card-img-top"
-                         th:alt="${product.getName}">
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${product.getName}"/>
-                        <p class="card-text" th:text="${product.description}"/>
+    <div class="wrapper">
+        <div>
+            <h3 th:if="${!cart.productCart.isEmpty()}">Корзина</h3>
+            <h3 th:if="${cart.productCart.isEmpty()}">Корзина пуста</h3>
+        </div>
+
+        <div class="cart-body">
+            <div class="cart-left-side">
+                <div class="card" th:each="product : ${prodInCart}">
+                    <div class="card-header">
+                        <h6 th:text="${product.getName}"/>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Price
+                    <div class="card-body cart">
+                        <div class="prod-img">
+                            <img th:src="@{'/images/'+ ${product.image}}" class="card-img-top cart-prod-image"
+                                 th:alt="${product.getName}">
+                        </div>
+                        <div>
+                            <p class="card-text" th:text="${product.description}"/>
+                        </div>
+                        <div>
                             <p th:text="${product.price}"/>
-                        </li>
-                        <li class="list-group-item">Old price
-                            <p style="text-decoration: line-through" th:text="${product.oldPrice}"/>
-                        </li>
-                        <li class="list-group-item" th:text="${product.status}"/>
-                    </ul>
+                            <p th:text="${product.oldPrice}" style="text-decoration: line-through"/>
+                        </div>
+                        <div>
+                            <select class="form-select" aria-label="Default select example">
+                                <option th:value="${product.price.multiply(1)}">1</option>
+                                <option th:value="${product.price.multiply(2)}">2</option>
+                                <option th:value="${product.price.multiply(3)}">3</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <a class="card-link" th:href="@{'/product?id=' + ${product.id}}" th:text="'More'"/>
                         <a class="card-link" th:href="@{'/cart/delete?id=' + ${product.id}}" th:text="'Delete'"/>
                     </div>
+                </div>
+            </div>
 
-
+            <div th:if="${!cart.productCart.isEmpty()}" class="cart-right-side">
+                <div>
+                    <h3>Cart</h3>
+                    <p th:text="'Count of goods: ' + ${prodInCart.size()}"/>
+                    <p th:text="'Discount: ' + ${discount} + ' $'"/>
+                </div>
+                <div>
+                    <h3>Total sum</h3>
+                    <p th:text="${totalSum} + ' $'"/>
+                </div>
+                <div>
+                    <a th:href="@{'/cart/order'}" class="btn btn-primary">Checkout</a>
                 </div>
             </div>
         </div>
-
     </div>
 
-    <div>
-        <a type="submit" th:href="@{'/cart/order'}">Checkout</a>
-    </div>
+
 </div>
+
+<footer>
+    <h1>Footer</h1>
+</footer>
 
 </body>
 </html>

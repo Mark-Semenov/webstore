@@ -6,14 +6,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import ru.gb.store.dto.UserDTO;
-import ru.gb.store.entities.Category;
-import ru.gb.store.entities.Img;
-import ru.gb.store.entities.Product;
-import ru.gb.store.entities.Role;
+import ru.gb.store.entities.*;
 import ru.gb.store.service.CategoryService;
 import ru.gb.store.service.ProductService;
 import ru.gb.store.service.RoleService;
@@ -37,9 +35,15 @@ public class AdminController {
     private final RoleService roleService;
     private final BCryptPasswordEncoder encoder;
 
+    @ModelAttribute
+    public void attributes(Model model){
+        model.addAttribute("blocks", productService.getAdminBlocks());
+        model.addAttribute("roles", roleService.getNamesOfRoles());
+        model.addAttribute("categories", categoryService.getNamesOfCategories());
+    }
 
     @GetMapping
-    public String welcome() {
+    public String welcome(Model model) {
         return "admin";
     }
 
@@ -47,8 +51,7 @@ public class AdminController {
     public String createUser(Model model) {
         model.addAttribute("userDTO", new UserDTO());
         model.addAttribute("role", new Role());
-        model.addAttribute("roles", roleService.getNamesOfRoles());
-        return "create_user";
+        return "admin";
     }
 
     @PostMapping("/new_user")
@@ -56,15 +59,14 @@ public class AdminController {
         user.setRole(role.getName());
         user.setPassword(encoder.encode(user.getPassword()));
         userService.addUser(user);
-        return "create_user";
+        return "admin";
     }
 
     @GetMapping("/new_product")
     public String createProduct(Model model) {
         model.addAttribute("product", new Product());
         model.addAttribute("image", new Img());
-        model.addAttribute("categories", categoryService.getNamesOfCategories());
-        return "new_product";
+        return "admin";
     }
 
     @PostMapping("/new_product")
@@ -76,7 +78,7 @@ public class AdminController {
         category.setProducts(List.of(product));
         product = null;
         category = null;
-        return "new_product";
+        return "admin";
     }
 
     private void setAndWriteImage(MultipartFile file, Product product, Img image) throws IOException {

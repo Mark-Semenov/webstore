@@ -59,5 +59,11 @@ public class CartService {
         userSessionCart.getProductCart().clear();
     }
 
-
+    public int getDiscount() {
+        int discount = 0;
+        for (Product p : userSessionCart.getProductCart()) {
+            discount += p.getOldPrice() != null ? p.getOldPrice().subtract(p.getPrice()).intValue() : 0;
+        }
+        return discount;
+    }
 }

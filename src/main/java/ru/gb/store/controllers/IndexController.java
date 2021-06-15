@@ -7,27 +7,35 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import ru.gb.store.session.UserSessionCart;
+import org.springframework.web.bind.annotation.*;
 import ru.gb.store.entities.Category;
 import ru.gb.store.entities.Product;
+import ru.gb.store.repositories.BrandRepository;
 import ru.gb.store.service.CategoryService;
 import ru.gb.store.service.ProductService;
+import ru.gb.store.session.UserSessionCart;
 
 import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/")
 public class IndexController {
 
     private final ProductService productService;
     private final CategoryService categoryService;
     private Page<Product> products;
     private final UserSessionCart userSessionCart;
+    private final BrandRepository brandRepository;
 
+    @ModelAttribute
+    public void attributes(Model model){
+        model.addAttribute("pages", productService.getPages());
+        model.addAttribute("categories", categoryService.getCategories());
+        model.addAttribute("cart", userSessionCart);
+        model.addAttribute("brands",brandRepository.findAll());
+    }
 
     @GetMapping("/login")
     public String login(Model model, @RequestParam(value = "error", required = false) Boolean error) {
@@ -40,22 +48,21 @@ public class IndexController {
     }
 
 
-    @GetMapping("/")
+    @GetMapping
     public String showProducts(Model model,
+                               @ModelAttribute(name = "products")
                                @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
                                @RequestParam(required = false, defaultValue = "", value = "search") String productName,
-                               @RequestParam(required = false, defaultValue = "", value = "filter") String filter) {
+                               @RequestParam(required = false, value = "filter") String filter,
+                               String minPrice, String maxPrice) {
 
-        products = productService.getPageWithProducts(page, null, filter);
+        products = productService.getPageWithProducts(page, null, minPrice, maxPrice);
         searchRequest(productName);
 
         model.addAttribute("productName", productName);
-        model.addAttribute("products", products);
-        model.addAttribute("pages", productService.getPages());
-        model.addAttribute("pageable", productService.getPageable());
-        model.addAttribute("categories", categoryService.getCategories());
         model.addAttribute("filter", filter);
-        model.addAttribute("cart", userSessionCart);
+        model.addAttribute("products", products);
+        model.addAttribute("pageable", productService.getPageable());
         log.info("размер корзины " + userSessionCart.getProductCart().size());
         return "index";
     }
@@ -68,18 +75,12 @@ public class IndexController {
 
         if (!categoryName.isEmpty()) {
             Category category = categoryService.getCategories().stream().filter(c -> c.getName().equals(categoryName)).iterator().next();
-            products = productService.getPageWithProducts(page, category, null);
+            products = productService.getPageWithProducts(page, category, (String[]) null);
         }
 
         searchRequest(productName);
-
-        model.addAttribute("pageable", productService.getPageable());
         model.addAttribute("products", products);
-        model.addAttribute("categories", categoryService.getCategories());
-        model.addAttribute("pages", productService.getPages());
-        model.addAttribute("cart", userSessionCart);
-        model.addAttribute("search", productName);
-
+        model.addAttribute("pageable", productService.getPageable());
         return "index";
     }
 

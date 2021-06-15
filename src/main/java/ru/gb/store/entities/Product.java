@@ -35,6 +35,10 @@ public class Product {
     private List<Category> category;
 
 
+    @ToString.Exclude
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    private Brand brand;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
