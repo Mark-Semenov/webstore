@@ -10,7 +10,7 @@
     <title>Cart</title>
 </head>
 <body>
-
+<div th:insert="menu :: menu"/>
 <div class="container">
 
     <div class="wrapper">
@@ -39,8 +39,8 @@
                         </div>
                         <div>
                             <select class="form-select" aria-label="Default select example">
-                                <option th:value="${product.price.multiply(1)}">1</option>
-                                <option th:value="${product.price.multiply(2)}">2</option>
+                                <option  th:value="${product.price.multiply(1)}">1</option>
+                                <option th:action="${product.price.multiply(2)}" th:value="${product.price.multiply(2)}">2</option>
                                 <option th:value="${product.price.multiply(3)}">3</option>
                             </select>
                         </div>
@@ -72,9 +72,7 @@
 
 </div>
 
-<footer>
-    <h1>Footer</h1>
-</footer>
+<div th:insert="footer::footer"/>
 
 </body>
 </html>

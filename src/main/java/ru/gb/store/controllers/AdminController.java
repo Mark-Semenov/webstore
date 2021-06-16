@@ -11,15 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import ru.gb.store.dto.UserDTO;
-import ru.gb.store.entities.*;
-import ru.gb.store.service.CategoryService;
-import ru.gb.store.service.ProductService;
-import ru.gb.store.service.RoleService;
-import ru.gb.store.service.UserService;
+import ru.gb.store.entities.Category;
+import ru.gb.store.entities.Product;
+import ru.gb.store.entities.Role;
+import ru.gb.store.service.*;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 
@@ -34,16 +31,18 @@ public class AdminController {
     private final CategoryService categoryService;
     private final RoleService roleService;
     private final BCryptPasswordEncoder encoder;
+    private final FileService fileService;
+
 
     @ModelAttribute
-    public void attributes(Model model){
+    public void attributes(Model model) {
         model.addAttribute("blocks", productService.getAdminBlocks());
         model.addAttribute("roles", roleService.getNamesOfRoles());
         model.addAttribute("categories", categoryService.getNamesOfCategories());
     }
 
     @GetMapping
-    public String welcome(Model model) {
+    public String welcome() {
         return "admin";
     }
 
@@ -65,29 +64,20 @@ public class AdminController {
     @GetMapping("/new_product")
     public String createProduct(Model model) {
         model.addAttribute("product", new Product());
-        model.addAttribute("image", new Img());
         return "admin";
     }
 
     @PostMapping("/new_product")
-    public String addNewProduct(String categoryName, MultipartFile file, Product product, Img image) throws IOException {
+    public String addNewProduct(String categoryName, MultipartFile file, Product product) throws IOException {
         Category category = categoryService.getCategoryByName(categoryName);
-        setAndWriteImage(file, product, image);
+        fileService.setAndWriteImage(file);
+        product.setImage(file.getOriginalFilename());
         product.setCategory(List.of(category));
         productService.saveProduct(product);
         category.setProducts(List.of(product));
         product = null;
         category = null;
         return "admin";
-    }
-
-    private void setAndWriteImage(MultipartFile file, Product product, Img image) throws IOException {
-        if (!file.isEmpty()) {
-            image.setName(file.getOriginalFilename());
-            image.setContent(file.getBytes());
-            product.setImage(image.getName());
-            Files.write(Path.of("src\\main\\resources\\static\\images\\".concat(image.getName())).toAbsolutePath(), image.getBytes());
-        }
     }
 
 

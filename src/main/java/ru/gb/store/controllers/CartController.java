@@ -61,7 +61,7 @@ public class CartController {
     }
 
     @GetMapping("/delete")
-    public String deleteProdFromCart(Model model, @RequestParam(name = "id", required = false) Long prodId) {
+    public String deleteProdFromCart(@RequestParam(name = "id", required = false) Long prodId) {
         cartService.deleteProduct(cartService.getProductById(prodId));
         return "redirect:/cart";
     }

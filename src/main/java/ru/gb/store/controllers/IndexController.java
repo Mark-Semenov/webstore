@@ -50,7 +50,6 @@ public class IndexController {
 
     @GetMapping
     public String showProducts(Model model,
-                               @ModelAttribute(name = "products")
                                @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
                                @RequestParam(required = false, defaultValue = "", value = "search") String productName,
                                @RequestParam(required = false, value = "filter") String filter,
