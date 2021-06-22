@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.gb.store.entities.Category;
 import ru.gb.store.entities.Product;
 import ru.gb.store.repositories.BrandRepository;
+import ru.gb.store.service.CartService;
 import ru.gb.store.service.CategoryService;
 import ru.gb.store.service.ProductService;
 import ru.gb.store.session.UserSessionCart;
@@ -28,13 +29,14 @@ public class IndexController {
     private Page<Product> products;
     private final UserSessionCart userSessionCart;
     private final BrandRepository brandRepository;
+    private final CartService cartService;
 
     @ModelAttribute
-    public void attributes(Model model){
+    public void attributes(Model model) {
         model.addAttribute("pages", productService.getPages());
         model.addAttribute("categories", categoryService.getCategories());
         model.addAttribute("cart", userSessionCart);
-        model.addAttribute("brands",brandRepository.findAll());
+        model.addAttribute("brands", brandRepository.findAll());
     }
 
     @GetMapping("/login")
@@ -51,18 +53,17 @@ public class IndexController {
     @GetMapping
     public String showProducts(Model model,
                                @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
-                               @RequestParam(required = false, defaultValue = "", value = "search") String productName,
+                               @RequestParam(required = false, defaultValue = "", name = "search") String prodName,
                                @RequestParam(required = false, value = "filter") String filter,
                                String minPrice, String maxPrice) {
 
-        products = productService.getPageWithProducts(page, null, minPrice, maxPrice);
-        searchRequest(productName);
+        products = productService.getPageWithProducts(page, null, minPrice, maxPrice, prodName);
+//        searchRequest(prodName);
 
-        model.addAttribute("productName", productName);
+        model.addAttribute("productName", prodName);
         model.addAttribute("filter", filter);
         model.addAttribute("products", products);
         model.addAttribute("pageable", productService.getPageable());
-        log.info("размер корзины " + userSessionCart.getProductCart().size());
         return "index";
     }
 
@@ -77,19 +78,26 @@ public class IndexController {
             products = productService.getPageWithProducts(page, category, (String[]) null);
         }
 
-        searchRequest(productName);
+//        searchRequest(productName);
         model.addAttribute("products", products);
         model.addAttribute("pageable", productService.getPageable());
         return "index";
     }
 
-    private void searchRequest(@NonNull String productName) {
-        if (!productName.isEmpty()) {
-            products = new PageImpl<>(products.stream()
-                    .filter(product -> product.getName().toLowerCase().matches(".*" + productName.toLowerCase() + ".*"))
-                    .collect(Collectors.toList()));
-        }
+
+    @GetMapping("/add")
+    public String addProductToCart(@RequestParam(name = "id") Long prodId,
+                                   @RequestParam(required = false, name = "page") Integer page,
+                                   @RequestParam(required = false, defaultValue = "", name = "search") String search) {
+
+        cartService.addToCart(prodId);
+
+        return "redirect:/?page=" + page + "&search=" + search;
+
     }
+
+
+
 
 
 }

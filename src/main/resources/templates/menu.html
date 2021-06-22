@@ -40,7 +40,7 @@
                     <div class="search">
                         <form class="d-flex">
                             <input class="form-control me-2 " name="search" type="search" placeholder="Search"
-                                   aria-label="Search">
+                                   aria-label="Search"/>
                             <button class="btn btn-outline-success" type="submit">Search</button>
                         </form>
                     </div>
@@ -51,7 +51,7 @@
                         </a>
                         <div th:if="${!@cartService.getUserSessionCart().productCart.isEmpty()}">
                             <img th:src="@{/images/cart_point.png}" class="cart-point-img">
-                            <p th:text="${@cartService.getUserSessionCart().productCart.size()}"
+                            <p th:text="${@cartService.getProductsCount()}"
                                class="cart_prod_count"/>
                         </div>
                     </div>

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.gb.store.entities.Order;
-import ru.gb.store.entities.Product;
 import ru.gb.store.entities.User;
 import ru.gb.store.service.CartService;
 import ru.gb.store.service.ProductService;
@@ -26,43 +25,38 @@ public class CartController {
 
 
     @ModelAttribute
-    public void attributes(Model model){
+    public void attributes(Model model) {
         model.addAttribute("cart", cartService.getUserSessionCart());
-        model.addAttribute("prodInCart", cartService.getUserSessionCart().getProductCart());
+        model.addAttribute("prodInCart", cartService.getUserSessionCart().getProductCart().keySet());
+        model.addAttribute("prodAndCount", cartService.getUserSessionCart().getProductCart());
         model.addAttribute("totalSum", cartService.getUserSessionCart().getTotalSum());
         model.addAttribute("discount", cartService.getDiscount());
+        model.addAttribute("countOfProducts", cartService.getProductsCount());
 
     }
 
     @GetMapping("/add")
-    public String addProductToCart(Model model,
-                                   @RequestParam(name = "id") Long id,
-                                   @RequestParam(name = "page") Integer page,
-                                   @RequestParam(required = false, defaultValue = "", name = "search") String search) {
-
-        Product product = productService.findProductById(id);
-        cartService.addProduct(product);
-
-        model.addAttribute("productId", id);
-        return "redirect:/?page=" + page + "&search=" + search;
+    public String addProductToCart(@RequestParam(name = "id") Long prodId) {
+        cartService.addToCart(prodId);
+        return "redirect:/cart";
 
     }
 
 
     @GetMapping
     public String cart(Model model, Principal principal) {
-        User user;
-        if (principal != null) {
-            user = userService.findUserByLogin(principal.getName());
-            model.addAttribute("userId", user.getId());
-        }
-
         return "cart";
     }
 
     @GetMapping("/delete")
-    public String deleteProdFromCart(@RequestParam(name = "id", required = false) Long prodId) {
-        cartService.deleteProduct(cartService.getProductById(prodId));
+    public String totalRemoveFromCart(@RequestParam(name = "id") Long prodId) {
+        cartService.deleteProduct(prodId);
+        return "redirect:/cart";
+    }
+
+    @GetMapping("/remove")
+    public String removeOne(@RequestParam(name = "id") Long prodId) {
+        cartService.removeOne(prodId);
         return "redirect:/cart";
     }
 

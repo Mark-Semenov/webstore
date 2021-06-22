@@ -13,6 +13,9 @@ import ru.gb.store.entities.Product;
 import ru.gb.store.repositories.CartRepository;
 import ru.gb.store.repositories.OrderRepository;
 
+import java.math.BigDecimal;
+import java.util.concurrent.atomic.AtomicReference;
+
 @Log4j2
 @Data
 @Component
@@ -22,7 +25,10 @@ public class CartService {
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
     private final UserSessionCart userSessionCart;
-
+    private final ProductService productService;
+    private Integer count = 0;
+    private Integer discount = 0;
+    private Integer prodDiscount = 0;
 
     public void saveOrder(Order order) {
         orderRepository.save(order);
@@ -32,25 +38,51 @@ public class CartService {
         cartRepository.save(cart);
     }
 
-    public void addProduct(@NonNull Product product) {
-        if (userSessionCart.getProductCart().stream().noneMatch(product1 -> product1.equals(product))) {
-            userSessionCart.getProductCart().add(product);
-        }
+    public void addToCart(@NonNull Long prodId) {
+        Product product;
+        if (getProductInsideCart(prodId) == null) {
+            count = 0;
+            product = productService.findProductById(prodId);
+        } else product = getProductInsideCart(prodId);
+        count = userSessionCart.getProductCart().get(product) != null ? userSessionCart.getProductCart().get(product) : 0;
+        prodDiscount = calculateDiscount(product);
+        discount += prodDiscount;
+        userSessionCart.getProductCart().put(product, ++count);
         userSessionCart.setTotalSum(userSessionCart.getTotalSum().add(product.getPrice()));
-        log.info("Products count in the cart: " + userSessionCart.getProductCart().size());
-        log.info("Total sum: " + userSessionCart.getTotalSum());
-
     }
 
-    public Product getProductById(Long prodId) {
-        return userSessionCart.getProductCart().stream().filter(product1 -> product1.getId().equals(prodId)).iterator().next();
-    }
-
-    public void deleteProduct(@NotNull Product product) {
+    public void deleteProduct(@NotNull Long prodId) {
+        Product product = getProductInsideCart(prodId);
+        prodDiscount = calculateDiscount(product);
+        count = userSessionCart.getProductCart().get(product);
+        discount -= (prodDiscount*count);
         userSessionCart.getProductCart().remove(product);
-        userSessionCart.setTotalSum(userSessionCart.getTotalSum().subtract(product.getPrice()));
-        log.info("Products count in the cart: " + userSessionCart.getProductCart().size());
-        log.info("Total sum: " + userSessionCart.getTotalSum());
+        userSessionCart.setTotalSum(userSessionCart.getTotalSum().subtract(product.getPrice().multiply(BigDecimal.valueOf(count))));
+
+    }
+
+    public void removeOne(Long prodId) {
+        Product product = getProductInsideCart(prodId);
+        prodDiscount = calculateDiscount(product);
+        count = userSessionCart.getProductCart().get(product);
+        if (count != 1) {
+            userSessionCart.getProductCart().replace(product, --count);
+            discount -= prodDiscount;
+            if (!userSessionCart.getTotalSum().equals(BigDecimal.valueOf(0))) {
+                userSessionCart.setTotalSum(userSessionCart.getTotalSum().subtract(product.getPrice()));
+            }
+        }
+    }
+
+    private Product getProductInsideCart(@NotNull Long prodId) {
+        Product product = null;
+        if (!userSessionCart.getProductCart().isEmpty()) {
+            product = userSessionCart.getProductCart().keySet()
+                    .stream()
+                    .filter(p -> p.getId().equals(prodId))
+                    .findFirst().orElse(null);
+        }
+        return product;
     }
 
     public void buyProducts(Order order) {
@@ -59,11 +91,15 @@ public class CartService {
         userSessionCart.getProductCart().clear();
     }
 
-    public int getDiscount() {
+    public int calculateDiscount(Product p) {
         int discount = 0;
-        for (Product p : userSessionCart.getProductCart()) {
-            discount += p.getOldPrice() != null ? p.getOldPrice().subtract(p.getPrice()).intValue() : 0;
-        }
+        discount += p.getOldPrice() != null ? p.getOldPrice().subtract(p.getPrice()).intValue() : 0;
         return discount;
+    }
+
+    public Integer getProductsCount() {
+        AtomicReference<Integer> totalCount = new AtomicReference<>(0);
+        userSessionCart.getProductCart().values().forEach(integer -> totalCount.updateAndGet(v -> v + integer));
+        return totalCount.get();
     }
 }
