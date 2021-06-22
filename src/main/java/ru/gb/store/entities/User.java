@@ -24,24 +24,6 @@ public class User {
     private String email;
     private Integer phone;
 
-    public User(String firstname, String lastname, LocalDate age, String login, String password, String email, Integer phone, List<Role> roles) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.age = age;
-        this.login = login;
-        this.password = password;
-        this.email = email;
-        this.phone = phone;
-        this.roles = roles;
-    }
-
-    public User(String login, String password, String email, List<Role> roles) {
-        this.login = login;
-        this.password = password;
-        this.email = email;
-        this.roles = roles;
-    }
-
     @ManyToMany
     @JoinTable(
             name = "user_roles",
