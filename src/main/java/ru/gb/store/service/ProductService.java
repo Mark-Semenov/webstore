@@ -14,8 +14,9 @@ import ru.gb.store.repositories.AdminPanelBlockRepository;
 import ru.gb.store.repositories.AdminURLRepository;
 import ru.gb.store.repositories.ProductRepository;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,34 +25,48 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private List<Integer> pages;
     private Page<Product> products;
     private Pageable pageable;
     private final AdminURLRepository adminURLRepository;
     private final AdminPanelBlockRepository adminPanelBlockRepository;
 
-    public Page<Product> getPageWithProducts(Integer page, Category category, String... filter) {
-        pages = new ArrayList<>();
-        pageable = PageRequest.of(page, 6, Sort.by("id"));
+    public Page<Product> getPageWithProducts(Integer page, Category category, Map<String, String> filters) {
+        pageable = PageRequest.of(page, 6, sortProd(filters));
         products = productRepository.findAll(pageable);
 
         if (category != null) {
-            products = productRepository.findAllByCategory(pageable, category);
+            products = productRepository.findAllByCategoryOrderByName(pageable, category);
         }
 
 
-        if (filter != null && searchRequest(filter[2])) return products;
+        if (searchRequest(filters.get("search"))) return products;
 
-//        if (filter != null && filter[0] != null && filter[1] != null) {
-//            products = productRepository.findAllByPriceBetween(
-//                    BigDecimal.valueOf(Long.parseLong(filter[0])),
-//                    BigDecimal.valueOf(Long.parseLong(filter[1])), pageable);
-//        }
+        findByPriceBetween(filters);
 
-        for (int i = 0; i < products.getTotalPages(); i++) {
-            pages.add(i);
-        }
         return products;
+    }
+
+    private Sort sortProd(Map<String, String> filters) {
+        if (filters.get("minPrice") != null && filters.get("maxPrice") != null) {
+            if (!filters.get("minPrice").isEmpty() && !filters.get("maxPrice").isEmpty()) {
+                return Sort.by("price");
+            }
+        }
+
+
+        return Sort.by("id");
+    }
+
+    private void findByPriceBetween(Map<String, String> filters) {
+        Long min = !filters.get("minPrice").isEmpty() ? Long.valueOf(filters.get("minPrice")) : null;
+        Long max = !filters.get("maxPrice").isEmpty() ? Long.valueOf(filters.get("maxPrice")) : null;
+        if (min != null && max != null) {
+            products = productRepository.findAllByPriceBetween(
+                    BigDecimal.valueOf(min),
+                    BigDecimal.valueOf(max),
+                    pageable);
+        }
+
     }
 
     public Product findProductById(Long id) {
@@ -78,9 +93,7 @@ public class ProductService {
             products = new PageImpl<>(productRepository.findAll().stream().filter(product -> product.getName()
                     .toLowerCase().matches(".*" + productName.toLowerCase() + ".*"))
                     .collect(Collectors.toList()));
-            if (!products.isEmpty()) {
-                return true;
-            }
+            return !products.isEmpty();
         }
 
 

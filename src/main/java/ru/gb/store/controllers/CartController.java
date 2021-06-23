@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.gb.store.entities.Order;
-import ru.gb.store.entities.User;
 import ru.gb.store.service.CartService;
 import ru.gb.store.service.ProductService;
 import ru.gb.store.service.UserService;
@@ -19,10 +18,8 @@ import java.security.Principal;
 @RequestMapping("/cart")
 public class CartController {
 
-    private final ProductService productService;
     private final UserService userService;
     private final CartService cartService;
-
 
     @ModelAttribute
     public void attributes(Model model) {
@@ -32,19 +29,16 @@ public class CartController {
         model.addAttribute("totalSum", cartService.getUserSessionCart().getTotalSum());
         model.addAttribute("discount", cartService.getDiscount());
         model.addAttribute("countOfProducts", cartService.getProductsCount());
-
     }
 
     @GetMapping("/add")
     public String addProductToCart(@RequestParam(name = "id") Long prodId) {
         cartService.addToCart(prodId);
         return "redirect:/cart";
-
     }
 
-
     @GetMapping
-    public String cart(Model model, Principal principal) {
+    public String cart() {
         return "cart";
     }
 

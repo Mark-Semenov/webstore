@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    Page<Product> findAllByCategory(Pageable pageable, Category category);
+    Page<Product> findAllByCategoryOrderByName(Pageable pageable, Category category);
 
     List<Product> findAllByNameContains(String name);
 
