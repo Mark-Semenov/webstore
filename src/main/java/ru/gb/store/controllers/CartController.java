@@ -5,12 +5,14 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.gb.store.entities.Cart;
 import ru.gb.store.entities.Order;
 import ru.gb.store.service.CartService;
 import ru.gb.store.service.ProductService;
 import ru.gb.store.service.UserService;
 
 import java.security.Principal;
+import java.util.List;
 
 @Log4j2
 @Controller
@@ -27,7 +29,7 @@ public class CartController {
         model.addAttribute("prodInCart", cartService.getUserSessionCart().getProductCart().keySet());
         model.addAttribute("prodAndCount", cartService.getUserSessionCart().getProductCart());
         model.addAttribute("totalSum", cartService.getUserSessionCart().getTotalSum());
-        model.addAttribute("discount", cartService.getDiscount());
+        model.addAttribute("discount", cartService.getUserSessionCart().getDiscount());
         model.addAttribute("countOfProducts", cartService.getProductsCount());
     }
 
@@ -56,8 +58,12 @@ public class CartController {
 
 
     @GetMapping("/order")
-    public String buyProducts(Model model) {
+    public String buyProducts(Model model, Principal principal) {
         model.addAttribute("order", new Order());
+        Cart cart = new Cart();
+        cartService.saveUserCart(cart);
+        cart.setUser(userService.findUserByLogin(principal.getName()));
+        cart.setProducts(List.of(cartService.getUserSessionCart().getProductCart().keySet().iterator().next()));
         return "order";
     }
 

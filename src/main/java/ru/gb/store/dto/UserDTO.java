@@ -16,6 +16,6 @@ public class UserDTO {
     private String matchingPassword;
     private String email;
     private String role;
-    private Integer phone;
+    private String phone;
 
 }
