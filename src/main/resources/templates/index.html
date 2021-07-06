@@ -15,103 +15,123 @@
 <div th:insert="menu :: menu"/>
 
 <!--Products-->
-<div class="container">
 
-    <div class="products">
-        <!--filtration-->
-        <div class="filter-options">
-            <h5>Price</h5>
-            <div class="price-input-range">
-                <div class="input-group mb-3">
-                    <label>
-                        <input type="text" step="any" placeholder="from" th:name="minPrice" class="form-control">
-                    </label>
-                </div>
-                <div class="input-group">
-                    <label>
-                        <input type="text" step="any" placeholder="to" th:name="maxPrice" class="form-control">
-                    </label>
-                </div>
-            </div>
+<div class="wrapper">
+    <div class="top container">
 
-            <div th:each="brand : ${brands}">
-                <h5 th:text="${brand.id}"/>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault1">
-                    <label th:text="${brand.title}" class="form-check-label" for="flexCheckDefault1"/>
-                </div>
-            </div>
-            <div>
-                <h5>Brands</h5>
-                <div class="form-check" th:each="brand : ${brands}">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault2">
-                    <label th:text="${brand.title}" class="form-check-label" for="flexCheckDefault2"/>
-                </div>
-            </div>
-        </div>
-
-
-        <!--Cards-->
-        <div class="cards">
-            <div class="row row-cols-1 row-cols-md-3 g-4 prod">
-                <div class="col" th:each="product : ${products}">
-                    <div class="card">
-                        <img th:src="@{'/images/'+ ${product.image}}" th:alt="${product.getName}"
-                             class="card-img-top card-img">
-                        <div class="card-body">
-                            <h5 class="card-title" th:text="${product.getName}"/>
-                            <p class="card-text" th:text="${product.description}"/>
+        <div class="products">
+            <!--filtration-->
+            <div class="filter-options">
+                <h5>Price</h5>
+                <div class="price-input-range">
+                    <form>
+                        <div class="input-group mb-3">
+                            <label>
+                                <input type="search" name="minPrice" step="any" placeholder="from"
+                                       class="form-control">
+                            </label>
                         </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">Price
-                                <p th:text="${product.price}"/>
-                            </li>
-                            <li class="list-group-item">Old price
-                                <p style="text-decoration: line-through" th:text="${product.oldPrice}"/>
-                            </li>
-                            <li class="list-group-item" th:text="${product.status}"/>
-                        </ul>
-                        <div class="card-footer">
-                            <a class="card-link" th:href="@{'/product?id=' + ${product.id}}" th:text="'More'"/>
-                            <a th:href="@{'/cart/add?id=' + ${product.id} + '&page=' + ${pageable.getPageNumber()} + '&search=' + ${productName}}"
-                               class="card-link" th:text="'Add to cart'"/>
+                        <div class="input-group">
+                            <label>
+                                <input type="search" name="maxPrice" step="any" placeholder="to"
+                                       class="form-control">
+                            </label>
                         </div>
+                        <div>
+                            <button class="btn btn-primary" type="submit">Find</button>
+                        </div>
+
+                    </form>
+                </div>
+
+                <div>
+                    <h5>CPU</h5>
+                    <div class="form-check" th:each="brand : ${brands}">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault1">
+                        <label th:text="${brand.title}" class="form-check-label" for="flexCheckDefault1"/>
+                    </div>
+                </div>
+                <div>
+                    <h5>Brands</h5>
+                    <div class="form-check" th:each="brand : ${brands}">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault2">
+                        <label th:text="${brand.title}" class="form-check-label" for="flexCheckDefault2"/>
                     </div>
                 </div>
             </div>
 
-            <!--Pagination-->
-            <div>
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link"
-                           th:if="${pageable.hasPrevious()}"
-                           th:href="@{${#request.getServletPath()} + '?page=' + ${pageable.previousOrFirst().getPageNumber()}}">Previous</a>
-                    </li>
-                    <li class="page-item" th:each="p : ${pages}">
-                        <a class="page-link"
-                           th:if="${pageable.getPageNumber() != p}"
-                           th:href="@{${#request.getServletPath()} + '?page=' + ${p}}"
-                           th:text="${p + 1}"/>
-                        <a class="page-link" style="background-color: #198754; color: white"
-                           th:if="${pageable.getPageNumber() == p}"
-                           th:text="${p + 1}"/>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link"
-                           th:if="${pageable.next().getPageNumber() <= pageable.getPageSize()}"
-                           th:href="@{${#request.getServletPath()} + '?page=' + ${pageable.next().getPageNumber()}}">Next</a>
-                    </li>
-                </ul>
+
+            <!--Cards-->
+            <div class="cards">
+                <div class="cards-block">
+
+                    <div class="my-card" th:each="product : ${products}">
+                        <div>
+                            <img th:src="@{'/images/'+ ${product.image}}" th:alt="${product.name}"
+                                 class="card-img-top card-img">
+                        </div>
+                        <div class="card-attribute">
+                            <div>
+                                <h5 class="card-title" th:text="${product.name}"/>
+                                <p class="card-text" th:text="${product.description}"/>
+                            </div>
+                            <div>
+                                <p>Price</p>
+                                <p th:text="${product.price}"/>
+                            </div>
+                            <div>
+                                <p>Old price</p>
+                                <p style="text-decoration: line-through" th:text="${product.oldPrice}"/>
+                            </div>
+                            <div>
+                                <p class="" th:text="${product.status}"/>
+                            </div>
+                            <div class="card-links-block">
+                                <a class="card-link" th:href="@{'/product?id=' + ${product.id}}" th:text="'More'"/>
+                                <a th:href="@{'/add?id=' + ${product.id} + '&page=' + ${pageable.getPageNumber()} + '&search=' + ${productName}}"
+                                   class="card-link" th:text="'Add to cart'"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Pagination-->
+                <div>
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link"
+                               th:if="${products.hasPrevious()}"
+                               th:href="@{${#httpServletRequest.getContextPath()} + '?page=' + ${pageable.previousOrFirst().getPageNumber()}}">Previous</a>
+
+                        </li>
+                        <div th:each="i: ${#numbers.sequence(0, products.getTotalPages() - 1)}"
+                             th:if="${products.getPageable().isPaged()}">
+                            <li class="page-item">
+                                <a class="page-link"
+                                   th:unless="${products.getPageable().getPageNumber()==i}"
+                                   th:href="@{${#httpServletRequest.getContextPath()} + '?page=' + ${i}}"
+                                   th:text="${i + 1}"/>
+                                <a class="page-link" style="background-color: #198754; color: white"
+                                   th:if="${products.getPageable().getPageNumber()==i}"
+                                   th:text="${i + 1}"/>
+                            </li>
+                        </div>
+                        <li class="page-item">
+                            <a class="page-link"
+                               th:if="${products.hasNext()}"
+                               th:href="@{${#httpServletRequest.getContextPath()} + '?page=' + ${pageable.next().getPageNumber()}}">Next</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
+
         </div>
 
     </div>
+
+    <div th:insert="footer::footer"/>
+
 </div>
-
-
-<div th:insert="footer::footer"/>
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"

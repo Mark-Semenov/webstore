@@ -4,18 +4,19 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.gb.store.entities.Category;
 import ru.gb.store.entities.Product;
 import ru.gb.store.repositories.BrandRepository;
+import ru.gb.store.service.CartService;
 import ru.gb.store.service.CategoryService;
 import ru.gb.store.service.ProductService;
 import ru.gb.store.session.UserSessionCart;
 
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -28,13 +29,14 @@ public class IndexController {
     private Page<Product> products;
     private final UserSessionCart userSessionCart;
     private final BrandRepository brandRepository;
+    private final CartService cartService;
+    private final Map<String, String> filters = new HashMap<>();
 
     @ModelAttribute
-    public void attributes(Model model){
-        model.addAttribute("pages", productService.getPages());
+    public void attributes(Model model) {
         model.addAttribute("categories", categoryService.getCategories());
         model.addAttribute("cart", userSessionCart);
-        model.addAttribute("brands",brandRepository.findAll());
+        model.addAttribute("brands", brandRepository.findAll());
     }
 
     @GetMapping("/login")
@@ -51,18 +53,19 @@ public class IndexController {
     @GetMapping
     public String showProducts(Model model,
                                @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
-                               @RequestParam(required = false, defaultValue = "", value = "search") String productName,
-                               @RequestParam(required = false, value = "filter") String filter,
-                               String minPrice, String maxPrice) {
+                               @RequestParam(required = false, defaultValue = "", name = "search") String prodName,
+                               @RequestParam(required = false, defaultValue = "", name = "minPrice") String minPrice,
+                               @RequestParam(required = false, defaultValue = "", name = "maxPrice") String maxPrice) {
 
-        products = productService.getPageWithProducts(page, null, minPrice, maxPrice);
-        searchRequest(productName);
+        filters.put("search", prodName);
+        filters.put("minPrice", minPrice);
+        filters.put("maxPrice", maxPrice);
 
-        model.addAttribute("productName", productName);
-        model.addAttribute("filter", filter);
+        products = productService.getPageWithProducts(page, null, filters);
+
+        model.addAttribute("productName", prodName);
         model.addAttribute("products", products);
         model.addAttribute("pageable", productService.getPageable());
-        log.info("размер корзины " + userSessionCart.getProductCart().size());
         return "index";
     }
 
@@ -72,23 +75,27 @@ public class IndexController {
                                          @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
                                          @RequestParam(required = false, defaultValue = "", value = "search") @NonNull String productName) {
 
+        filters.put("search", productName);
         if (!categoryName.isEmpty()) {
             Category category = categoryService.getCategories().stream().filter(c -> c.getName().equals(categoryName)).iterator().next();
-            products = productService.getPageWithProducts(page, category, (String[]) null);
+            products = productService.getPageWithProducts(page, category, filters);
         }
 
-        searchRequest(productName);
         model.addAttribute("products", products);
         model.addAttribute("pageable", productService.getPageable());
         return "index";
     }
 
-    private void searchRequest(@NonNull String productName) {
-        if (!productName.isEmpty()) {
-            products = new PageImpl<>(products.stream()
-                    .filter(product -> product.getName().toLowerCase().matches(".*" + productName.toLowerCase() + ".*"))
-                    .collect(Collectors.toList()));
-        }
+
+    @GetMapping("/add")
+    public String addProductToCart(@RequestParam(name = "id") Long prodId,
+                                   @RequestParam(required = false, name = "page") Integer page,
+                                   @RequestParam(required = false, defaultValue = "", name = "search") String search) {
+
+        cartService.addToCart(prodId);
+
+        return "redirect:/?page=" + page + "&search=" + search;
+
     }
 
 

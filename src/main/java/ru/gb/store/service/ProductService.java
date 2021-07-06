@@ -1,10 +1,9 @@
 package ru.gb.store.service;
 
+import lombok.Data;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.gb.store.entities.AdminPanelBlock;
@@ -16,39 +15,58 @@ import ru.gb.store.repositories.AdminURLRepository;
 import ru.gb.store.repositories.ProductRepository;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
+@Data
 @RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private List<Integer> pages;
     private Page<Product> products;
     private Pageable pageable;
     private final AdminURLRepository adminURLRepository;
     private final AdminPanelBlockRepository adminPanelBlockRepository;
 
-    public Page<Product> getPageWithProducts(Integer page, Category category, String... filter) {
-        pages = new ArrayList<>();
-        pageable = PageRequest.of(page, 5, Sort.by("id"));
+    public Page<Product> getPageWithProducts(Integer page, Category category, Map<String, String> filters) {
+        pageable = PageRequest.of(page, 6, sortProd(filters));
         products = productRepository.findAll(pageable);
 
         if (category != null) {
-            products = productRepository.findAllByCategory(pageable, category);
+            products = productRepository.findAllByCategoryOrderByName(pageable, category);
         }
 
-        if (filter != null && filter[0] != null && filter[1] != null) {
-            products = productRepository.findAllByPriceBetween(
-                    BigDecimal.valueOf(Long.parseLong(filter[0])),
-                    BigDecimal.valueOf(Long.parseLong(filter[1])), pageable);
-        }
 
-        for (int i = 0; i < pageable.getPageSize(); i++) {
-            pages.add(i);
-        }
+        if (searchRequest(filters.get("search"))) return products;
+
+        findByPriceBetween(filters);
+
         return products;
+    }
+
+    private Sort sortProd(Map<String, String> filters) {
+        if (filters.get("minPrice") != null && filters.get("maxPrice") != null) {
+            if (!filters.get("minPrice").isEmpty() && !filters.get("maxPrice").isEmpty()) {
+                return Sort.by("price");
+            }
+        }
+
+
+        return Sort.by("id");
+    }
+
+    private void findByPriceBetween(Map<String, String> filters) {
+        Long min = !filters.get("minPrice").isEmpty() ? Long.valueOf(filters.get("minPrice")) : null;
+        Long max = !filters.get("maxPrice").isEmpty() ? Long.valueOf(filters.get("maxPrice")) : null;
+        if (min != null && max != null) {
+            products = productRepository.findAllByPriceBetween(
+                    BigDecimal.valueOf(min),
+                    BigDecimal.valueOf(max),
+                    pageable);
+        }
+
     }
 
     public Product findProductById(Long id) {
@@ -61,26 +79,25 @@ public class ProductService {
     }
 
 
-    public List<Integer> getPages() {
-        return pages;
-    }
-
-
-    public Page<Product> getProducts() {
-        return products;
-    }
-
-    public Pageable getPageable() {
-        return pageable;
-    }
-
-    public List<AdminURL> getAdminURL(){
+    public List<AdminURL> getAdminURL() {
         return adminURLRepository.findAll();
     }
 
-    public List<AdminPanelBlock> getAdminBlocks(){
+    public List<AdminPanelBlock> getAdminBlocks() {
         return adminPanelBlockRepository.findAll();
     }
 
+
+    private boolean searchRequest(@NonNull String productName) {
+        if (!productName.isEmpty()) {
+            products = new PageImpl<>(productRepository.findAll().stream().filter(product -> product.getName()
+                    .toLowerCase().matches(".*" + productName.toLowerCase() + ".*"))
+                    .collect(Collectors.toList()));
+            return !products.isEmpty();
+        }
+
+
+        return false;
+    }
 
 }
