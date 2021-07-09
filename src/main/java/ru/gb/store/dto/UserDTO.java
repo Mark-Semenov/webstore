@@ -2,6 +2,7 @@ package ru.gb.store.dto;
 
 import lombok.Data;
 import org.springframework.stereotype.Component;
+import ru.gb.store.entities.Cart;
 
 @Data
 @Component
@@ -17,5 +18,4 @@ public class UserDTO {
     private String email;
     private String role;
     private String phone;
-
 }

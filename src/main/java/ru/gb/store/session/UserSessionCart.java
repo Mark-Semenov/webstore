@@ -26,6 +26,7 @@ import java.util.Map;
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserSessionCart {
 
+
     private Map<Product, Integer> productCart;
     private Integer count = 0;
     private Integer discount = 0;

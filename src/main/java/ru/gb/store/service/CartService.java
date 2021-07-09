@@ -13,7 +13,10 @@ import ru.gb.store.entities.Product;
 import ru.gb.store.repositories.CartRepository;
 import ru.gb.store.repositories.OrderRepository;
 
+import javax.annotation.PreDestroy;
 import java.math.BigDecimal;
+import java.security.Principal;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Log4j2
@@ -26,6 +29,7 @@ public class CartService {
     private final OrderRepository orderRepository;
     private final UserSessionCart userSessionCart;
     private final ProductService productService;
+    private final UserService userService;
 
     public void saveOrder(Order order) {
         orderRepository.save(order);
@@ -99,4 +103,6 @@ public class CartService {
         userSessionCart.getProductCart().values().forEach(integer -> totalCount.updateAndGet(v -> v + integer));
         return totalCount.get();
     }
+
+
 }

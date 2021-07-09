@@ -58,12 +58,8 @@ public class CartController {
 
 
     @GetMapping("/order")
-    public String buyProducts(Model model, Principal principal) {
+    public String buyProducts(Model model) {
         model.addAttribute("order", new Order());
-        Cart cart = new Cart();
-        cartService.saveUserCart(cart);
-        cart.setUser(userService.findUserByLogin(principal.getName()));
-        cart.setProducts(List.of(cartService.getUserSessionCart().getProductCart().keySet().iterator().next()));
         return "order";
     }
 

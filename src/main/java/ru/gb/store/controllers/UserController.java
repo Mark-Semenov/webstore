@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.gb.store.dto.UserDTO;
+import ru.gb.store.entities.Cart;
 import ru.gb.store.repositories.RoleRepository;
 import ru.gb.store.service.UserService;
 
