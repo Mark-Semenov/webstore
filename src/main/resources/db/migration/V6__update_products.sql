@@ -1,0 +1,1 @@
+alter table products add column count bigserial;

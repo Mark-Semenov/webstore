@@ -15,11 +15,11 @@ public class RoleService {
 
     private final RoleRepository roleRepository;
 
-    public List<String> getNamesOfRoles(){
+    public List<String> getNamesOfRoles() {
         return roleRepository.findAll().stream().map(Role::getName).collect(Collectors.toList());
     }
 
-    public List<Role> getAllRoles(){
+    public List<Role> getAllRoles() {
         return roleRepository.findAll();
     }
 }

@@ -24,6 +24,7 @@ public class Product {
     private Boolean sale;
     private Integer discount;
     private String image;
+    private Integer count;
 
     @ManyToMany
     @ToString.Exclude

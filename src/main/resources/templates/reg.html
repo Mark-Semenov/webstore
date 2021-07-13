@@ -11,55 +11,59 @@
 </head>
 <body>
 <div th:insert="menu :: menu"/>
-
-<form method="post" class="container" th:action="@{/reg}" th:object="${newUser}">
-    <div class="input-group mb-3">
-        <span class="input-group-text" id="inputGroup-sizing-default1">Firstname</span>
-        <input th:field="*{firstname}" type="text" class="form-control" aria-label="Sizing example input"
-               aria-describedby="inputGroup-sizing-default1">
+<div class="wrapper">
+    <div class="top container">
+        <form method="post" class="reg-page" th:action="@{/reg}" th:object="${newUser}">
+            <h3 style="padding-bottom: 25px">User registration</h3>
+            <div class="reg-page-blocks">
+                <div class="input-group-reg mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-default1">Firstname</span>
+                    <input th:field="*{firstname}" type="text" class="form-control" aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-default1" required="required">
+                </div>
+                <div class="input-group-reg mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-default2">Lastname</span>
+                    <input th:field="*{lastname}" type="text" class="form-control" aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-default2" required="required">
+                </div>
+            </div>
+            <div class="reg-page-blocks">
+                <div class="input-group-reg mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-default3">Age</span>
+                    <input th:field="*{age}" type="text" class="form-control" aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-default3" required="required">
+                </div>
+                <div class="input-group-reg mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-default7">Email</span>
+                    <input th:field="*{email}" type="text" class="form-control" aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-default7" required="required">
+                </div>
+                <div class="input-group-reg mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-default8">Phone</span>
+                    <input th:field="*{phone}" type="text" class="form-control" aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-default8" required="required">
+                </div>
+            </div>
+            <div class="reg-page-blocks">
+                <div class="input-group-reg mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-default5">Password</span>
+                    <input th:field="*{password}" type="text" class="form-control" aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-default5" required="required">
+                </div>
+                <div class="input-group-reg mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-default6">Confirm password</span>
+                    <input th:field="*{matchingPassword}" type="text" class="form-control" aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-default6" required="required">
+                </div>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary">Sign up</button>
+            </div>
+        </form>
     </div>
-    <div class="input-group mb-3">
-        <span class="input-group-text" id="inputGroup-sizing-default2">lastname</span>
-        <input th:field="*{lastname}" type="text" class="form-control" aria-label="Sizing example input"
-               aria-describedby="inputGroup-sizing-default2">
-    </div>
-    <div class="input-group mb-3">
-        <span class="input-group-text" id="inputGroup-sizing-default3">age</span>
-        <input th:field="*{age}" type="text" class="form-control" aria-label="Sizing example input"
-               aria-describedby="inputGroup-sizing-default3">
-    </div>
-    <div class="input-group mb-3">
-        <span class="input-group-text" id="inputGroup-sizing-default4">login</span>
-        <input th:field="*{login}" type="text" class="form-control" aria-label="Sizing example input"
-               aria-describedby="inputGroup-sizing-default4">
-    </div>
-    <div class="input-group mb-3">
-        <span class="input-group-text" id="inputGroup-sizing-default5">password</span>
-        <input th:field="*{password}" type="text" class="form-control" aria-label="Sizing example input"
-               aria-describedby="inputGroup-sizing-default5">
-    </div>
-    <div class="input-group mb-3">
-        <span class="input-group-text" id="inputGroup-sizing-default6">Confirm password</span>
-        <input th:field="*{matchingPassword}" type="text" class="form-control" aria-label="Sizing example input"
-               aria-describedby="inputGroup-sizing-default6">
-    </div>
-    <div class="input-group mb-3">
-        <span class="input-group-text" id="inputGroup-sizing-default7">Email</span>
-        <input th:field="*{email}" type="text" class="form-control" aria-label="Sizing example input"
-               aria-describedby="inputGroup-sizing-default7">
-    </div>
-    <div class="input-group mb-3">
-        <span class="input-group-text" id="inputGroup-sizing-default8">Phone</span>
-        <input th:field="*{phone}" type="text" class="form-control" aria-label="Sizing example input"
-               aria-describedby="inputGroup-sizing-default8">
-    </div>
-
-    <div>
-        <button type="submit" class="btn btn-primary">Sign up</button>
-    </div>
-</form>
 
 
 <div th:insert="footer::footer"/>
+</div>
 </body>
 </html>

@@ -13,8 +13,8 @@ import ru.gb.store.repositories.BrandRepository;
 import ru.gb.store.service.CartService;
 import ru.gb.store.service.CategoryService;
 import ru.gb.store.service.ProductService;
-import ru.gb.store.session.UserSessionCart;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +27,6 @@ public class IndexController {
     private final ProductService productService;
     private final CategoryService categoryService;
     private Page<Product> products;
-    private final UserSessionCart userSessionCart;
     private final BrandRepository brandRepository;
     private final CartService cartService;
     private final Map<String, String> filters = new HashMap<>();
@@ -35,12 +34,11 @@ public class IndexController {
     @ModelAttribute
     public void attributes(Model model) {
         model.addAttribute("categories", categoryService.getCategories());
-        model.addAttribute("cart", userSessionCart);
         model.addAttribute("brands", brandRepository.findAll());
     }
 
     @GetMapping("/login")
-    public String login(Model model, @RequestParam(value = "error", required = false) Boolean error) {
+    public String login(Model model, @RequestParam(value = "error", required = false) Boolean error, Principal principal) {
         String errorMessage = null;
         if (error != null && error) {
             errorMessage = "invalid login or password";
@@ -80,7 +78,6 @@ public class IndexController {
             Category category = categoryService.getCategories().stream().filter(c -> c.getName().equals(categoryName)).iterator().next();
             products = productService.getPageWithProducts(page, category, filters);
         }
-
         model.addAttribute("products", products);
         model.addAttribute("pageable", productService.getPageable());
         return "index";
@@ -93,9 +90,7 @@ public class IndexController {
                                    @RequestParam(required = false, defaultValue = "", name = "search") String search) {
 
         cartService.addToCart(prodId);
-
         return "redirect:/?page=" + page + "&search=" + search;
-
     }
 
 

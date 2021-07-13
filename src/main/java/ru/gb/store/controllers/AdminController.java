@@ -57,7 +57,7 @@ public class AdminController {
     public String addNewUser(UserDTO user, Role role) {
         user.setRole(role.getName());
         user.setPassword(encoder.encode(user.getPassword()));
-        userService.addUser(user);
+        userService.registerNewUserAccount(user);
         return "admin";
     }
 
@@ -77,6 +77,13 @@ public class AdminController {
         category.setProducts(List.of(product));
         product = null;
         category = null;
+        return "admin";
+    }
+
+
+    @GetMapping("/products")
+    public String showAllProducts(Model model) {
+        model.addAttribute("products", productService.getProductRepository().findAll());
         return "admin";
     }
 

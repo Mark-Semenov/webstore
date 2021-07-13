@@ -5,14 +5,11 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.gb.store.entities.Cart;
 import ru.gb.store.entities.Order;
 import ru.gb.store.service.CartService;
-import ru.gb.store.service.ProductService;
 import ru.gb.store.service.UserService;
 
 import java.security.Principal;
-import java.util.List;
 
 @Log4j2
 @Controller
@@ -30,18 +27,21 @@ public class CartController {
         model.addAttribute("prodAndCount", cartService.getUserSessionCart().getProductCart());
         model.addAttribute("totalSum", cartService.getUserSessionCart().getTotalSum());
         model.addAttribute("discount", cartService.getUserSessionCart().getDiscount());
-        model.addAttribute("countOfProducts", cartService.getProductsCount());
+        model.addAttribute("countOfProducts", cartService.getUserSessionCart().getProductsCount());
+    }
+
+    @GetMapping
+    public String cart(Principal principal) {
+        if (principal != null) {
+            userService.saveUserCartWithProducts(userService.findUserByEmail(principal.getName()).getCart());
+        }
+        return "cart";
     }
 
     @GetMapping("/add")
     public String addProductToCart(@RequestParam(name = "id") Long prodId) {
         cartService.addToCart(prodId);
         return "redirect:/cart";
-    }
-
-    @GetMapping
-    public String cart() {
-        return "cart";
     }
 
     @GetMapping("/delete")
@@ -65,7 +65,7 @@ public class CartController {
 
     @PostMapping("/order/checkout")
     public String checkout(Principal principal, Order order) {
-        order.setUser(userService.findUserByLogin(principal.getName()));
+        order.setUser(userService.findUserByEmail(principal.getName()));
         cartService.buyProducts(order);
         return "order";
 

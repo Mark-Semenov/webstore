@@ -28,7 +28,7 @@
         </li>
     </ul>
 </div>
-<div class="wrapper">
+<div class="admin-page-wrapper">
     <div class="admin-panel-body">
         <div class="left-side">
 
@@ -132,17 +132,32 @@
                 </div>
 
             </div>
-        </div>
 
+            <div class="admin-panel-products" th:if="${#request.getServletPath().equals('/admin/products')}">
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Old price</th>
+                        <th scope="col">status</th>
+                    </tr>
+                    </thead>
+                    <tbody th:each="p:${products}">
+                    <tr>
+                        <td th:text="${p.name}"/>
+                        <td th:text="${p.description}"/>
+                        <td th:text="${p.price}"/>
+                        <td th:text="${p.oldPrice}"/>
+                        <td th:text="${p.status}"/>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
-
-
-<footer>
-    <div>
-
-    </div>
-</footer>
 
 
 </body>

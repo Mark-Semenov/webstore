@@ -1,21 +1,42 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
-        crossorigin="anonymous"/>
-  <link th:href="@{/css/style.css}" rel="stylesheet"/>
-  <title th:text="${product.getName}"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
+          crossorigin="anonymous"/>
+    <link th:href="@{/css/style.css}" rel="stylesheet"/>
+    <title th:text="${product.name}"/>
 </head>
 <body>
 <div th:insert="menu :: menu"/>
 
+<div class="wrapper">
+    <div class="top container">
+        <div class="card mb-3 container about-product">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img th:src="@{'/images/'+ ${product.image}}" th:alt="${product.name}"
+                         class="card-img-top card-img">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${product.name}"/>
+                        <p class="card-text" th:text="${product.description}"/>
+                        <p class="card-text"><small class="text-muted" th:text="'Price ' + ${product.price}"/></p>
+                        <a th:href="@{${#httpServletRequest.getServletPath()} + '/add?id=' + ${product.id}}"
+                           class="card-link" th:text="'Add to cart'"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:insert="footer::footer"/>
+</div>
 
-
-
-
-<div th:insert="footer::footer"/>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
 </body>
 </html>
