@@ -7,9 +7,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.gb.store.dto.UserDTO;
+import ru.gb.store.entities.Cart;
 import ru.gb.store.entities.User;
+import ru.gb.store.repositories.CartRepository;
 import ru.gb.store.repositories.RoleRepository;
 import ru.gb.store.repositories.UserRepository;
+import ru.gb.store.session.UserSessionCart;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -17,6 +23,8 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final CartRepository cartRepository;
+    private final UserSessionCart userSessionCart;
 
 
     @Override
@@ -38,10 +46,13 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void addUser(UserDTO user) {
         User u = new User();
+        Cart cart = new Cart();
+        cartRepository.save(cart);
         u.setLogin(user.getLogin());
         u.setPassword(user.getPassword());
         u.setEmail(user.getEmail());
         u.setRoles(roleRepository.findByName(user.getRole()));
+        u.setCart(cart);
         userRepository.save(u);
     }
 

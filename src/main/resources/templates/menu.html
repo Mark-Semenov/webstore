@@ -57,10 +57,14 @@
                     </div>
 
                 </div>
-
             </div>
-
+            <div class="sign-up-main">
+                <a th:if="${#authentication.name.equals('anonymousUser')}" th:href="@{'/reg'}">Sign Up</a>
+                <a th:if="${#authentication.name.equals('anonymousUser')}" th:href="@{'/login'}">Sign In</a>
+                <a th:if="${!#authentication.name.equals('anonymousUser')}" th:href="@{'/user'}" th:text="${#authentication.name}"/>
+            </div>
         </div>
+
     </nav>
 
 

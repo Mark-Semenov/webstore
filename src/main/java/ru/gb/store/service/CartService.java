@@ -13,7 +13,10 @@ import ru.gb.store.entities.Product;
 import ru.gb.store.repositories.CartRepository;
 import ru.gb.store.repositories.OrderRepository;
 
+import javax.annotation.PreDestroy;
 import java.math.BigDecimal;
+import java.security.Principal;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Log4j2
@@ -26,9 +29,7 @@ public class CartService {
     private final OrderRepository orderRepository;
     private final UserSessionCart userSessionCart;
     private final ProductService productService;
-    private Integer count = 0;
-    private Integer discount = 0;
-    private Integer prodDiscount = 0;
+    private final UserService userService;
 
     public void saveOrder(Order order) {
         orderRepository.save(order);
@@ -41,33 +42,33 @@ public class CartService {
     public void addToCart(@NonNull Long prodId) {
         Product product;
         if (getProductInsideCart(prodId) == null) {
-            count = 0;
+            userSessionCart.setCount(0);
             product = productService.findProductById(prodId);
         } else product = getProductInsideCart(prodId);
-        count = userSessionCart.getProductCart().get(product) != null ? userSessionCart.getProductCart().get(product) : 0;
-        prodDiscount = calculateDiscount(product);
-        discount += prodDiscount;
-        userSessionCart.getProductCart().put(product, ++count);
+        userSessionCart.setCount(userSessionCart.getProductCart().get(product) != null ? userSessionCart.getProductCart().get(product) : 0);
+        userSessionCart.setProdDiscount(calculateDiscount(product));
+        userSessionCart.setDiscount(userSessionCart.incrementDiscountAndGet(userSessionCart.getProdDiscount()));
+        userSessionCart.getProductCart().put(product, userSessionCart.incrementCountAndGet());
         userSessionCart.setTotalSum(userSessionCart.getTotalSum().add(product.getPrice()));
     }
 
     public void deleteProduct(@NotNull Long prodId) {
         Product product = getProductInsideCart(prodId);
-        prodDiscount = calculateDiscount(product);
-        count = userSessionCart.getProductCart().get(product);
-        discount -= (prodDiscount*count);
+        userSessionCart.setProdDiscount(calculateDiscount(product));
+        userSessionCart.setCount(userSessionCart.getProductCart().get(product));
+        userSessionCart.setDiscount(userSessionCart.calculateDiscountAndGet(userSessionCart.getProdDiscount(), userSessionCart.getCount()));
         userSessionCart.getProductCart().remove(product);
-        userSessionCart.setTotalSum(userSessionCart.getTotalSum().subtract(product.getPrice().multiply(BigDecimal.valueOf(count))));
+        userSessionCart.setTotalSum(userSessionCart.getTotalSum().subtract(product.getPrice().multiply(BigDecimal.valueOf(userSessionCart.getCount()))));
 
     }
 
     public void removeOne(Long prodId) {
         Product product = getProductInsideCart(prodId);
-        prodDiscount = calculateDiscount(product);
-        count = userSessionCart.getProductCart().get(product);
-        if (count != 1) {
-            userSessionCart.getProductCart().replace(product, --count);
-            discount -= prodDiscount;
+        userSessionCart.setProdDiscount(calculateDiscount(product));
+        userSessionCart.setCount(userSessionCart.getProductCart().get(product));
+        if (userSessionCart.getCount() != 1) {
+            userSessionCart.getProductCart().replace(product, userSessionCart.decrementCountAndGet());
+            userSessionCart.calculateDiscountAndGet(userSessionCart.getProdDiscount(), 1);
             if (!userSessionCart.getTotalSum().equals(BigDecimal.valueOf(0))) {
                 userSessionCart.setTotalSum(userSessionCart.getTotalSum().subtract(product.getPrice()));
             }
@@ -102,4 +103,6 @@ public class CartService {
         userSessionCart.getProductCart().values().forEach(integer -> totalCount.updateAndGet(v -> v + integer));
         return totalCount.get();
     }
+
+
 }

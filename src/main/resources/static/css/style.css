@@ -35,6 +35,18 @@
     margin: 50px;
 }
 
+.sign-up-main{
+    width: 60px;
+}
+
+.sign-up-main a{
+    color: white;
+    text-decoration: none;
+}
+.sign-up-main a:hover{
+    color: teal;
+}
+
 .sign-up:active {
     background-color: teal;
 }
@@ -241,7 +253,8 @@
 
 .cart-image {
     display: flex;
-    padding-left: 100px;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
 .cart-png {
