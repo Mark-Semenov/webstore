@@ -1,3 +1,4 @@
+drop table if exists brands cascade;
 CREATE TABLE brands
 (
     id    BIGSERIAL PRIMARY KEY,
@@ -11,11 +12,11 @@ VALUES ('Samsung'),
        ('Huawei'),
        ('Epson');
 
-
+drop table if exists brands_products cascade;
 create table brands_products
 (
-    brand_id   BIGINT REFERENCES brands (id) ON DELETE CASCADE,
-    product_id BIGINT
+    brand_id   BIGSERIAL REFERENCES brands (id) ON DELETE CASCADE,
+    product_id BIGSERIAL references products (id)
 );
 
 insert into brands_products (brand_id, product_id)

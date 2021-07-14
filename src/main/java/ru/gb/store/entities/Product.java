@@ -22,7 +22,6 @@ public class Product {
     private BigDecimal price;
     private BigDecimal oldPrice;
     private Boolean sale;
-    private Integer discount;
     private String image;
     private Integer count;
 

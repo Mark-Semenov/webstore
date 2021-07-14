@@ -53,7 +53,6 @@ public class ProductService {
             }
         }
 
-
         return Sort.by("id");
     }
 
@@ -71,6 +70,10 @@ public class ProductService {
 
     public Product findProductById(Long id) {
         return productRepository.findById(id).orElse(null);
+    }
+
+    public List<Product> findByName(String name){
+        return productRepository.findAllByNameContainingIgnoreCase(name);
     }
 
     @Transactional

@@ -7,15 +7,15 @@
           integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
           crossorigin="anonymous"/>
     <link th:href="@{/css/style.css}" rel="stylesheet"/>
-    <title th:text="${product.name}"/>
+    <title>About product</title>
 </head>
 <body>
 <div th:insert="menu :: menu"/>
 
 <div class="wrapper">
     <div class="top container">
-        <div class="card mb-3 container about-product">
-            <div class="row g-0">
+        <div class="card mb-3 container about-product" >
+            <div class="row g-0 about-product-card" th:if="${products != null}" th:each="product:${products}">
                 <div class="col-md-4">
                     <img th:src="@{'/images/'+ ${product.image}}" th:alt="${product.name}"
                          class="card-img-top card-img">
@@ -30,6 +30,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div>
+            <p th:text="${notFound}"/>
         </div>
     </div>
     <div th:insert="footer::footer"/>

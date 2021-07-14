@@ -14,7 +14,6 @@ import ru.gb.store.service.CartService;
 import ru.gb.store.service.CategoryService;
 import ru.gb.store.service.ProductService;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +37,7 @@ public class IndexController {
     }
 
     @GetMapping("/login")
-    public String login(Model model, @RequestParam(value = "error", required = false) Boolean error, Principal principal) {
+    public String login(Model model, @RequestParam(value = "error", required = false) Boolean error) {
         String errorMessage = null;
         if (error != null && error) {
             errorMessage = "invalid login or password";

@@ -71,7 +71,7 @@ public class UserService implements UserDetailsService {
         Cart cart = new Cart();
         u.setFirstname(user.getFirstname());
         u.setLastname(user.getLastname());
-        u.setAge(user.getAge());
+        u.setDate(user.getAge());
         u.setPhone(user.getPhone());
         u.setPassword(user.getPassword());
         u.setEmail(user.getEmail());

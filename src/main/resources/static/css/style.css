@@ -375,9 +375,13 @@
 }
 
 .about-product{
-    padding: 100px;
     margin-top: 100px;
 }
+
+.about-product-card{
+    padding: 50px;
+}
+
 
 .order{
     padding-top: 100px;
