@@ -134,7 +134,7 @@ public class AdminController {
     @PostMapping("/new_category")
     public String saveNewCategory(Category newCategory) {
         categoryService.saveCategory(newCategory);
-        return "admin";
+        return "redirect:/admin";
     }
 
 
