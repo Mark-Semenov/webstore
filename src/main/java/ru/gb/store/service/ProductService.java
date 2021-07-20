@@ -7,7 +7,6 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.gb.store.entities.AdminPanelBlock;
-import ru.gb.store.entities.AdminURL;
 import ru.gb.store.entities.Category;
 import ru.gb.store.entities.Product;
 import ru.gb.store.repositories.AdminPanelBlockRepository;
@@ -68,28 +67,13 @@ public class ProductService {
 
     }
 
-    public Product findProductById(Long id) {
-        return productRepository.findById(id).orElse(null);
-    }
-
-    public List<Product> findByName(String name){
+    public List<Product> findByName(String name) {
         return productRepository.findAllByNameContainingIgnoreCase(name);
-    }
-
-    @Transactional
-    public void saveProduct(Product product) {
-        productRepository.save(product);
-    }
-
-
-    public List<AdminURL> getAdminURL() {
-        return adminURLRepository.findAll();
     }
 
     public List<AdminPanelBlock> getAdminBlocks() {
         return adminPanelBlockRepository.findAll();
     }
-
 
     private boolean searchRequest(@NonNull String productName) {
         if (!productName.isEmpty()) {
@@ -101,6 +85,20 @@ public class ProductService {
 
 
         return false;
+    }
+
+    public Product findProductById(Long id) {
+        return productRepository.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public void saveProduct(Product product) {
+        productRepository.save(product);
+    }
+
+    @Transactional
+    public void removeProduct(Long id) {
+        productRepository.deleteById(id);
     }
 
 }

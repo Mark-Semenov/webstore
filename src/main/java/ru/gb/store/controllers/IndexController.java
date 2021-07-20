@@ -70,9 +70,14 @@ public class IndexController {
     public String showProductsByCategory(Model model,
                                          @PathVariable(required = false, name = "category") @NonNull String categoryName,
                                          @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
-                                         @RequestParam(required = false, defaultValue = "", value = "search") @NonNull String productName) {
+                                         @RequestParam(required = false, defaultValue = "", value = "search") @NonNull String productName,
+                                         @RequestParam(required = false, defaultValue = "", name = "minPrice") String minPrice,
+                                         @RequestParam(required = false, defaultValue = "", name = "maxPrice") String maxPrice) {
 
         filters.put("search", productName);
+        filters.put("minPrice", minPrice);
+        filters.put("maxPrice", maxPrice);
+
         if (!categoryName.isEmpty()) {
             Category category = categoryService.getCategories().stream().filter(c -> c.getName().equals(categoryName)).iterator().next();
             products = productService.getPageWithProducts(page, category, filters);

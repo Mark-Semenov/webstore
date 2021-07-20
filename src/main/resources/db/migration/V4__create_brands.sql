@@ -10,13 +10,14 @@ VALUES ('Samsung'),
        ('Apple'),
        ('Lenovo'),
        ('Huawei'),
-       ('Epson');
+       ('Epson'),
+       ('Canon');
 
 drop table if exists brands_products cascade;
 create table brands_products
 (
-    brand_id   BIGSERIAL REFERENCES brands (id) ON DELETE CASCADE,
-    product_id BIGSERIAL references products (id)
+    brand_id   BIGSERIAL REFERENCES brands (id) on delete cascade,
+    product_id BIGSERIAL references products (id) on delete cascade
 );
 
 insert into brands_products (brand_id, product_id)

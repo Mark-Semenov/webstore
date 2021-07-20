@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.gb.store.entities.Order;
+import ru.gb.store.entities.OrderStatus;
 import ru.gb.store.service.CartService;
 import ru.gb.store.service.UserService;
 
@@ -66,6 +67,7 @@ public class CartController {
     @PostMapping("/order/checkout")
     public String checkout(Principal principal, Order order) {
         order.setUser(userService.findUserByEmail(principal.getName()));
+        order.setStatus(OrderStatus.NEW);
         cartService.buyProducts(order);
         return "order";
 

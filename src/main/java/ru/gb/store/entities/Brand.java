@@ -15,7 +15,12 @@ public class Brand {
     private Long id;
     private String title;
 
-    @OneToMany
+    @OneToMany (cascade = CascadeType.REMOVE)
+    @JoinTable(
+            name = "brands_products",
+            joinColumns = @JoinColumn(name = "brand_id"),
+            inverseJoinColumns = @JoinColumn(name = "products_id")
+    )
     private List<Product> products;
 
 }

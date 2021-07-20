@@ -7,7 +7,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.gb.store.dto.UserDTO;
-import ru.gb.store.entities.*;
+import ru.gb.store.entities.Cart;
+import ru.gb.store.entities.Product;
+import ru.gb.store.entities.ProductInCart;
+import ru.gb.store.entities.User;
 import ru.gb.store.repositories.CartRepository;
 import ru.gb.store.repositories.ProductInCartRepository;
 import ru.gb.store.repositories.RoleRepository;
@@ -37,21 +40,18 @@ public class UserService implements UserDetailsService {
         User user = null;
         if (email != null && !email.isEmpty()) {
             user = userRepository.findByEmail(email);
-            for (Role r : user.getRoles()) {
-                if (!r.getName().equals("ROLE_ADMIN")) {
-                    Cart cart = findUserByEmail(user.getEmail()).getCart();
-                    if (cart.getProducts() != null) {
-                        for (ProductInCart p : cart.getProducts()) {
-                            if (userSessionCart.getProductCart().keySet().stream().noneMatch(product -> product.equals(p.getProduct()))) {
-                                userSessionCart.getProductCart().put(p.getProduct(), p.getCount());
-                            } else {
-                                int count = userSessionCart.getProductCart().get(p.getProduct()) + p.getCount();
-                                userSessionCart.getProductCart().put(p.getProduct(), count);
-                            }
+            if (user.getRoles().iterator().next().getName().equals("ROLE_USER")) {
+                Cart cart = findUserByEmail(user.getEmail()).getCart();
+                if (cart.getProducts() != null) {
+                    for (ProductInCart p : cart.getProducts()) {
+                        if (userSessionCart.getProductCart().keySet().stream().anyMatch(product -> product.equals(p.getProduct()))) {
+                            userSessionCart.getProductCart().replace(p.getProduct(), p.getCount() + userSessionCart.getProductCart().get(p.getProduct()));
+                        } else {
+                            userSessionCart.getProductCart().put(p.getProduct(), p.getCount());
                         }
-                        userSessionCart.calculateTotalDiscount();
-                        userSessionCart.calculateTotalSum();
                     }
+                    userSessionCart.calculateTotalDiscount();
+                    userSessionCart.calculateTotalSum();
                 }
             }
         }
@@ -69,17 +69,18 @@ public class UserService implements UserDetailsService {
     public void registerNewUserAccount(UserDTO user) {
         User u = new User();
         Cart cart = new Cart();
+        cartRepository.save(cart);
         u.setFirstname(user.getFirstname());
         u.setLastname(user.getLastname());
-        u.setDate(user.getAge());
+        u.setDate(user.getDate());
         u.setPhone(user.getPhone());
         u.setPassword(user.getPassword());
         u.setEmail(user.getEmail());
         u.setRoles(roleRepository.findByName(user.getRole()));
         u.setCart(cart);
-        cart.setUser(u);
         userRepository.save(u);
         saveUserCartWithProducts(cart);
+        userSessionCart.getProductCart().clear();
 
         try {
             httpServletRequest.login(u.getEmail(), user.getMatchingPassword());

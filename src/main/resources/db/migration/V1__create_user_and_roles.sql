@@ -2,16 +2,17 @@ drop table if exists users cascade;
 CREATE TABLE users
 (
     id        BIGSERIAL PRIMARY KEY,
-    firstname VARCHAR(255),
-    lastname  VARCHAR(255),
-    age       DATE,
-    password  VARCHAR(255),
-    email     VARCHAR(255) unique,
-    phone     VARCHAR(255) unique
+    firstname VARCHAR(255)        not null,
+    lastname  VARCHAR(255)        not null,
+    date      DATE                not null,
+    password  VARCHAR(255)        not null,
+    email     VARCHAR(255) unique not null,
+    phone     VARCHAR(255) unique not null
 );
 
-INSERT INTO users (email, password)
-VALUES ('admin@corp.com', '$2y$12$2ITRQJb/fKRUMnyZkwyA6OPOl5jyERiK6x/n7Xait/esoBmZfi6Ne'); --login/pas: admin@corp.com / admin
+INSERT INTO users (firstname, lastname, date, password, email, phone)
+VALUES ('admin', 'admin', '01.01.2000', '$2y$12$2ITRQJb/fKRUMnyZkwyA6OPOl5jyERiK6x/n7Xait/esoBmZfi6Ne',
+        'admin@corp.com', '+74950000000'); --login/pas: admin@corp.com / admin
 
 
 drop table if exists roles cascade;
@@ -21,7 +22,8 @@ CREATE TABLE roles
     name VARCHAR(255) unique
 );
 
-create unique index role_name on roles (name);
+create
+unique index role_name on roles (name);
 
 INSERT INTO roles (name)
 VALUES ('ROLE_USER'),

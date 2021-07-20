@@ -24,7 +24,7 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#">Pricing</a>
                         </li>
-                        <li class="nav-item dropdown" th:if="${!(#request.getServletPath().equals('/cart'))}">
+                        <li class="nav-item dropdown" th:if="${#request.getServletPath().equals('/')}">
                             <button class="btn btn-success dropdown-toggle " id="navbarDropdown" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false">Categories
                             </button>
@@ -37,12 +37,15 @@
                             </ul>
                         </li>
                     </ul>
-                    <div class="search">
+                    <div class="search" th:if="${#request.getServletPath().equals('/')}">
                         <form class="d-flex">
                             <input class="form-control me-2 " name="search" type="search" placeholder="Search"
                                    aria-label="Search"/>
                             <button class="btn btn-outline-success" type="submit">Search</button>
                         </form>
+                    </div >
+
+                    <div class="empty" th:if="${!#request.getServletPath().equals('/')}">
                     </div>
 
                     <div class="cart-image">

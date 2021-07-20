@@ -36,7 +36,7 @@ public class Product {
 
 
     @ToString.Exclude
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     private Brand brand;
 
     @Override

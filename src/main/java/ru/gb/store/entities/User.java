@@ -32,7 +32,7 @@ public class User {
     @ToString.Exclude
     private List<Role> roles;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.ALL)
     private Cart cart;
 
 }

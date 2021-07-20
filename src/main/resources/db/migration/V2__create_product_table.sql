@@ -10,7 +10,7 @@ CREATE TABLE products
     old_price   NUMERIC,
     count       INTEGER,
     sale        BOOLEAN,
-    brand_id    BIGSERIAL references brands (id) on delete cascade
+    brand_id    BIGSERIAL references brands (id)
 );
 VALUES ('Samsung'),
        ('Apple'),
@@ -50,8 +50,8 @@ VALUES ('Phones'),
 drop table if exists product_category cascade;
 CREATE TABLE product_category
 (
-    product_id  BIGSERIAL REFERENCES products (id) ON DELETE CASCADE,
-    category_id BIGSERIAL REFERENCES categories (id)
+    product_id  BIGSERIAL REFERENCES products (id) on delete cascade,
+    category_id BIGSERIAL REFERENCES categories (id) on delete cascade
 );
 
 INSERT INTO product_category (product_id, category_id)
@@ -66,15 +66,16 @@ VALUES (1, 1),
 drop table if exists carts cascade;
 CREATE TABLE carts
 (
-    id      BIGSERIAL PRIMARY KEY,
-    user_id BIGSERIAL references users (id) on delete cascade
+    id BIGSERIAL PRIMARY KEY
 );
+
+insert into carts default values;
 
 drop table if exists product_in_cart cascade;
 CREATE TABLE product_in_cart
 (
     id         BIGSERIAL primary key,
-    product_id BIGSERIAL references products (id),
+    product_id BIGSERIAL references products (id) on delete cascade,
     count      BIGSERIAL
 );
 
@@ -90,9 +91,12 @@ CREATE TABLE orders
 (
     id        BIGSERIAL PRIMARY KEY,
     user_id   BIGSERIAL references users (id) on delete cascade,
-    address   VARCHAR(255),
+    address   VARCHAR(255) not null,
+    status    VARCHAR(255) not null,
     total_sum numeric
 );
+
+
 
 
 

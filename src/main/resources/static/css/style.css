@@ -258,6 +258,10 @@
     width: 100%;
 }
 
+.empty{
+    width: 600px;
+}
+
 .cart-image {
     display: flex;
     padding-left: 50px;
@@ -387,4 +391,13 @@
     padding-top: 100px;
     padding-bottom: 100px;
     max-width: 70%;
+}
+
+.update-status-form{
+    display: flex;
+    justify-content: space-between;
+}
+
+.status-upd-button{
+    margin-left: 20px;
 }
