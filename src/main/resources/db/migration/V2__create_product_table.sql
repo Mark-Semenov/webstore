@@ -12,11 +12,6 @@ CREATE TABLE products
     sale        BOOLEAN,
     brand_id    BIGSERIAL references brands (id)
 );
-VALUES ('Samsung'),
-       ('Apple'),
-       ('Lenovo'),
-       ('Huawei'),
-       ('Epson');
 
 INSERT INTO products (name, description, status, image, price, old_price, count, sale, brand_id)
 VALUES ('Samsung Galaxy U21 Ultra',
@@ -32,7 +27,10 @@ VALUES ('Samsung Galaxy U21 Ultra',
        ('Epson L805', 'струйный, цветной, A4, Скорость печать (ч/б) до 37 стр/мин, формата А4', 'in stock', 'epson.jpg',
         3200, 3600, 35, true, 5),
        ('LENOVO IdeaPad S340-14IIL', '14", IPS, Intel Core i5 1035G1 1.0ГГц, 8ГБ, 256ГБ SSD, Intel UHD Graphics',
-        'in stock', 'lenovo-ideapad.jpg', 1900, 2300, 18, true, 3);
+        'in stock', 'lenovo-ideapad.jpg', 1900, 2300, 18, true, 3),
+       ('Canon PIXMA MG3640S',
+        'Многофункциональный струйный принтер, в стильном черном корпусе. Высокая скорость печати. Встроенный модуль Wi-Fi. Доступны картриджи XL',
+        'in stock', 'canon-pixma.jpg', 85, 95, 12, true, 6);
 
 drop table if exists categories cascade;
 CREATE TABLE categories
@@ -61,7 +59,8 @@ VALUES (1, 1),
        (4, 2),
        (5, 1),
        (6, 3),
-       (7, 2);
+       (7, 2),
+       (8, 3);
 
 drop table if exists carts cascade;
 CREATE TABLE carts
@@ -69,7 +68,8 @@ CREATE TABLE carts
     id BIGSERIAL PRIMARY KEY
 );
 
-insert into carts default values;
+insert into carts default
+values;
 
 drop table if exists product_in_cart cascade;
 CREATE TABLE product_in_cart
