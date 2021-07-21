@@ -35,7 +35,9 @@
                 </div>
                 <div class="input-group-reg mb-3">
                     <span class="input-group-text" id="inputGroup-sizing-default7">Email</span>
-                    <input th:field="*{email}" type="text" class="form-control" aria-label="Sizing example input"
+                    <input th:field="*{email}" type="text" class="form-control reg-email-input"
+                           aria-label="Sizing example input"
+                           th:placeholder="${emailExist}"
                            aria-describedby="inputGroup-sizing-default7" required="required">
                 </div>
                 <div class="input-group-reg mb-3">
@@ -47,12 +49,12 @@
             <div class="reg-page-blocks">
                 <div class="input-group-reg mb-3">
                     <span class="input-group-text" id="inputGroup-sizing-default5">Password</span>
-                    <input th:field="*{password}" type="text" class="form-control" aria-label="Sizing example input"
+                    <input th:field="*{password}" type="password" class="form-control" aria-label="Sizing example input"
                            aria-describedby="inputGroup-sizing-default5" required="required">
                 </div>
                 <div class="input-group-reg mb-3">
                     <span class="input-group-text" id="inputGroup-sizing-default6">Confirm password</span>
-                    <input th:field="*{matchingPassword}" type="text" class="form-control"
+                    <input th:field="*{matchingPassword}" type="password" class="form-control"
                            aria-label="Sizing example input"
                            aria-describedby="inputGroup-sizing-default6" required="required">
                 </div>

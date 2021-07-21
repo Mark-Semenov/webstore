@@ -403,3 +403,7 @@
 .status-upd-button{
     margin-left: 20px;
 }
+
+.reg-email-input::placeholder{
+    color: red;
+}

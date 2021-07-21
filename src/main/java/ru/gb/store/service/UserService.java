@@ -66,27 +66,31 @@ public class UserService implements UserDetailsService {
 
 
     @Transactional
-    public void registerNewUserAccount(UserDTO user) {
-        User u = new User();
-        Cart cart = new Cart();
-        cartRepository.save(cart);
-        u.setFirstname(user.getFirstname());
-        u.setLastname(user.getLastname());
-        u.setDate(user.getDate());
-        u.setPhone(user.getPhone());
-        u.setPassword(user.getPassword());
-        u.setEmail(user.getEmail());
-        u.setRoles(roleRepository.findByName(user.getRole()));
-        u.setCart(cart);
-        userRepository.save(u);
-        saveUserCartWithProducts(cart);
-        userSessionCart.getProductCart().clear();
-
-        try {
-            httpServletRequest.login(u.getEmail(), user.getMatchingPassword());
-        } catch (ServletException e) {
-            e.printStackTrace();
+    public boolean registerNewUserAccount(UserDTO user) {
+        if (findUserByEmail(user.getEmail()) != null) {
+            return false;
+        } else {
+            User u = new User();
+            Cart cart = new Cart();
+            cartRepository.save(cart);
+            u.setFirstname(user.getFirstname());
+            u.setLastname(user.getLastname());
+            u.setDate(user.getDate());
+            u.setPhone(user.getPhone());
+            u.setPassword(user.getPassword());
+            u.setEmail(user.getEmail());
+            u.setRoles(roleRepository.findByName(user.getRole()));
+            u.setCart(cart);
+            userRepository.save(u);
+            saveUserCartWithProducts(cart);
+            userSessionCart.getProductCart().clear();
+            try {
+                httpServletRequest.login(u.getEmail(), user.getMatchingPassword());
+            } catch (ServletException e) {
+                e.printStackTrace();
+            }
         }
+        return true;
     }
 
     public void saveUserCartWithProducts(Cart cart) {

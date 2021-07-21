@@ -17,6 +17,7 @@ public class UserController {
 
     private final UserService userService;
     private final BCryptPasswordEncoder encoder;
+    private String emailExist = null;
 
     @GetMapping("/user")
     public String welcome() {
@@ -27,6 +28,7 @@ public class UserController {
     @GetMapping("/reg")
     public String registrationUser(Model model) {
         model.addAttribute("newUser", new UserDTO());
+        model.addAttribute("emailExist", emailExist);
         return "reg";
     }
 
@@ -35,7 +37,10 @@ public class UserController {
         if (userDTO.getPassword().equals(userDTO.getMatchingPassword())) {
             userDTO.setPassword(encoder.encode(userDTO.getPassword()));
             userDTO.setRole("ROLE_USER");
-            userService.registerNewUserAccount(userDTO);
+            if (!userService.registerNewUserAccount(userDTO)) {
+                emailExist = "This email has already exists";
+                return "redirect:/reg?error=email-exist";
+            }
         }
         return "redirect:/";
     }
