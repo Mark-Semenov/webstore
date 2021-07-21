@@ -1,7 +1,6 @@
 package ru.gb.store.service;
 
 import lombok.Data;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Component;
@@ -11,6 +10,7 @@ import ru.gb.store.entities.Category;
 import ru.gb.store.entities.Product;
 import ru.gb.store.repositories.AdminPanelBlockRepository;
 import ru.gb.store.repositories.AdminURLRepository;
+import ru.gb.store.repositories.BrandRepository;
 import ru.gb.store.repositories.ProductRepository;
 
 import java.math.BigDecimal;
@@ -28,6 +28,7 @@ public class ProductService {
     private Pageable pageable;
     private final AdminURLRepository adminURLRepository;
     private final AdminPanelBlockRepository adminPanelBlockRepository;
+    private final BrandRepository brandRepository;
 
     public Page<Product> getPageWithProducts(Integer page, Category category, Map<String, String> filters) {
         pageable = PageRequest.of(page, 6, sortProd(filters));
@@ -35,8 +36,8 @@ public class ProductService {
 
         if (category != null) {
             products = productRepository.findAllByCategoryOrderByName(pageable, category);
+            if (searchProductsByBrand(filters.get("brandName"),products)) return products;
         }
-
 
         if (searchRequest(filters.get("search"))) return products;
 
@@ -75,16 +76,22 @@ public class ProductService {
         return adminPanelBlockRepository.findAll();
     }
 
-    private boolean searchRequest(@NonNull String productName) {
+    private boolean searchRequest(String productName) {
         if (!productName.isEmpty()) {
             products = new PageImpl<>(productRepository.findAll().stream().filter(product -> product.getName()
                     .toLowerCase().matches(".*" + productName.toLowerCase() + ".*"))
                     .collect(Collectors.toList()));
-            return !products.isEmpty();
         }
+        return products.isEmpty();
+    }
 
-
-        return false;
+    private boolean searchProductsByBrand(String brandName, Page<Product> products) {
+        if (brandName != null && !brandName.isEmpty()) {
+            this.products = new PageImpl<>(products.stream()
+                    .filter(product -> product.getBrand().getTitle().equals(brandName))
+                    .collect(Collectors.toList()));
+        }
+        return this.products.isEmpty();
     }
 
     public Product findProductById(Long id) {

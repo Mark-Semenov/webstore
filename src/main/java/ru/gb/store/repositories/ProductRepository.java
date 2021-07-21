@@ -15,7 +15,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findAllByPriceBetween(BigDecimal price, BigDecimal price2, Pageable pageable);
 
-    Product findByNameContainingIgnoreCase(String name);
+    List<Product> findByBrand(String name);
 
     List<Product> findAllByNameContainingIgnoreCase(String name);
 

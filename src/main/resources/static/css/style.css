@@ -107,6 +107,7 @@
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    margin-bottom: 50px;
 
 }
 
@@ -241,6 +242,7 @@
     flex-direction: column;
     margin-right: 5%;
     width: 200px;
+    min-width: 100px;
 }
 
 .footer {

@@ -206,6 +206,7 @@
                     </tr>
                     </thead>
                     <tbody th:each="order : ${orders}">
+
                     <tr>
                         <td th:text="${order.user.email}"/>
                         <td th:text="${order.address}"/>
@@ -220,14 +221,12 @@
                                             <option th:if="${!order.status.name().equals(status.name())}"
                                                     th:each="status : ${statuses}"
                                                     th:text="${status.name()}"
-                                                    th:value="${status.name()}"
-                                            />
+                                                    th:value="${status.name()}"/>
                                         </select>
                                         <button type="submit" class="btn btn-primary status-upd-button">Change</button>
                                     </div>
                                 </form>
                             </div>
-
                         </td>
                     </tr>
                     </tbody>

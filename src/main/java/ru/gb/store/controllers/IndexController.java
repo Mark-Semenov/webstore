@@ -52,11 +52,13 @@ public class IndexController {
                                @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
                                @RequestParam(required = false, defaultValue = "", name = "search") String prodName,
                                @RequestParam(required = false, defaultValue = "", name = "minPrice") String minPrice,
-                               @RequestParam(required = false, defaultValue = "", name = "maxPrice") String maxPrice) {
+                               @RequestParam(required = false, defaultValue = "", name = "maxPrice") String maxPrice,
+                               @RequestParam(required = false, name = "brandName") String brandName) {
 
         filters.put("search", prodName);
         filters.put("minPrice", minPrice);
         filters.put("maxPrice", maxPrice);
+        filters.put("brandName", brandName);
 
         products = productService.getPageWithProducts(page, null, filters);
 
@@ -72,11 +74,13 @@ public class IndexController {
                                          @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
                                          @RequestParam(required = false, defaultValue = "", value = "search") @NonNull String productName,
                                          @RequestParam(required = false, defaultValue = "", name = "minPrice") String minPrice,
-                                         @RequestParam(required = false, defaultValue = "", name = "maxPrice") String maxPrice) {
+                                         @RequestParam(required = false, defaultValue = "", name = "maxPrice") String maxPrice,
+                                         @RequestParam(required = false, name = "brandName") String brandName) {
 
         filters.put("search", productName);
         filters.put("minPrice", minPrice);
         filters.put("maxPrice", maxPrice);
+        filters.put("brandName", brandName);
 
         if (!categoryName.isEmpty()) {
             Category category = categoryService.getCategories().stream().filter(c -> c.getName().equals(categoryName)).iterator().next();
