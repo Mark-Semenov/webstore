@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
 import ru.gb.store.entities.Product;
 import ru.gb.store.service.ProductService;
 
@@ -18,7 +19,8 @@ import java.util.concurrent.atomic.AtomicReference;
 @Log4j2
 @Data
 @Component
-@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
+@SessionScope
+//@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserSessionCart {
 
     private final ProductService productService;
@@ -106,12 +108,13 @@ public class UserSessionCart {
 
     }
 
-    public void calculateTotalDiscount() {
+    public Integer calculateTotalDiscount() {
         discount = 0;
         for (Product p : productCart.keySet()) {
             prodDiscount = calculateProductDiscount(p);
             discount += (prodDiscount * productCart.get(p));
         }
+        return discount;
     }
 
     public void calculateTotalSum() {
