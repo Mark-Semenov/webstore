@@ -22,8 +22,8 @@ public class Product {
     private BigDecimal price;
     private BigDecimal oldPrice;
     private Boolean sale;
-    private Integer discount;
     private String image;
+    private Integer count;
 
     @ManyToMany
     @ToString.Exclude
@@ -36,7 +36,12 @@ public class Product {
 
 
     @ToString.Exclude
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
+    @JoinTable(
+            name = "brands_products",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "brand_id")
+    )
     private Brand brand;
 
     @Override

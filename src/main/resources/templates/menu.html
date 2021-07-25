@@ -15,16 +15,7 @@
 
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">About</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Contacts</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Pricing</a>
-                        </li>
-                        <li class="nav-item dropdown" th:if="${!(#request.getServletPath().equals('/cart'))}">
+                        <li class="nav-item dropdown" th:unless="${#request.getServletPath().equals('/cart')}">
                             <button class="btn btn-success dropdown-toggle " id="navbarDropdown" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false">Categories
                             </button>
@@ -37,19 +28,22 @@
                             </ul>
                         </li>
                     </ul>
-                    <div class="search">
+                    <div class="search" th:unless="${#request.getServletPath().equals('/cart')}">
                         <form class="d-flex">
                             <input class="form-control me-2 " name="search" type="search" placeholder="Search"
                                    aria-label="Search"/>
                             <button class="btn btn-outline-success" type="submit">Search</button>
                         </form>
+                    </div >
+
+                    <div class="empty" th:unless="${#request.getServletPath().equals('/')}">
                     </div>
 
                     <div class="cart-image">
                         <a th:href="@{'/cart'}">
                             <img th:src="@{/images/cart.png}" class="cart-png">
                         </a>
-                        <div th:if="${!@cartService.getUserSessionCart().productCart.isEmpty()}">
+                        <div th:unless="${@cartService.getUserSessionCart().productCart.isEmpty()}">
                             <img th:src="@{/images/cart_point.png}" class="cart-point-img">
                             <p th:text="${@cartService.getProductsCount()}"
                                class="cart_prod_count"/>
@@ -61,7 +55,8 @@
             <div class="sign-up-main">
                 <a th:if="${#authentication.name.equals('anonymousUser')}" th:href="@{'/reg'}">Sign Up</a>
                 <a th:if="${#authentication.name.equals('anonymousUser')}" th:href="@{'/login'}">Sign In</a>
-                <a th:if="${!#authentication.name.equals('anonymousUser')}" th:href="@{'/user'}" th:text="${#authentication.name}"/>
+                <a th:if="${!#authentication.name.equals('anonymousUser') && #authorization.expression('hasRole(''USER'')')}"  th:href="@{'/user'}"
+                   th:text="${#authentication.name}"/>
             </div>
         </div>
 
@@ -69,5 +64,9 @@
 
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
 </body>
 </html>

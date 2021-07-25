@@ -6,5 +6,5 @@ import ru.gb.store.entities.Brand;
 
 @Repository
 public interface BrandRepository extends JpaRepository<Brand, Long> {
-
+        Brand findByTitle(String title);
 }

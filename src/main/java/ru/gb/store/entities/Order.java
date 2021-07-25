@@ -15,6 +15,10 @@ public class Order {
     private Long id;
 
     private String address;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
     private BigDecimal totalSum;
 
     @ManyToOne

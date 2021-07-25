@@ -10,6 +10,19 @@
   <title th:text="'User'"/>
 </head>
 <body>
-<h1 th:text="'Hello ' + ${#authentication.getName()}"/>
+
+<div class="admin-top-menu">
+  <ul class="nav justify-content-end">
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="/">Home</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" th:href="@{'/cart'}">Cart</a>
+    </li>
+    <li>
+      <a class="nav-link" th:href="@{${#httpServletRequest.getContextPath()} + '/logout'}">Exit</a>
+    </li>
+  </ul>
+</div>
 </body>
 </html>
