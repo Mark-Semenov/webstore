@@ -16,15 +16,17 @@ VALUES ('Samsung'),
 drop table if exists brands_products cascade;
 create table brands_products
 (
-    brand_id   BIGSERIAL REFERENCES brands (id) on delete cascade,
-    product_id BIGSERIAL references products (id) on delete cascade
+    product_id BIGSERIAL references products (id) on delete cascade,
+    brand_id   BIGSERIAL references brands (id) on delete cascade
+
 );
 
-insert into brands_products (brand_id, product_id)
+insert into brands_products (product_id, brand_id)
 VALUES (1, 1),
        (2, 2),
-       (2, 3),
-       (2, 4),
-       (2, 5),
-       (5, 6),
-       (3, 7);
+       (3, 4),
+       (4, 2),
+       (5, 1),
+       (6, 5),
+       (7, 3),
+       (8, 6);

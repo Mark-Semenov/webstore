@@ -37,6 +37,11 @@ public class Product {
 
     @ToString.Exclude
     @ManyToOne
+    @JoinTable(
+            name = "brands_products",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "brand_id")
+    )
     private Brand brand;
 
     @Override
