@@ -2,7 +2,7 @@ package ru.gb.store.entities;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -18,8 +18,7 @@ public class User {
     private Long id;
     private String firstname;
     private String lastname;
-    private LocalDate age;
-    private String login;
+    private LocalDate date;
     private String password;
     private String email;
     private String phone;
@@ -30,9 +29,10 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @ToString.Exclude
     private List<Role> roles;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Cart cart;
 
 }

@@ -1,32 +1,29 @@
 package ru.gb.store.session;
 
+import com.sun.istack.NotNull;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import ru.gb.store.entities.Cart;
+import org.springframework.web.context.annotation.SessionScope;
 import ru.gb.store.entities.Product;
-import ru.gb.store.service.CartService;
-import ru.gb.store.service.UserService;
+import ru.gb.store.service.ProductService;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.math.BigDecimal;
-import java.security.Principal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Log4j2
 @Data
 @Component
-@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
+@SessionScope
+//@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserSessionCart {
 
-
+    private final ProductService productService;
     private Map<Product, Integer> productCart;
     private Integer count = 0;
     private Integer discount = 0;
@@ -37,24 +34,101 @@ public class UserSessionCart {
     public void init() {
         productCart = new HashMap<>();
         totalSum = new BigDecimal(0);
+    }
+
+    public void addToCart(Long prodId) {
+        Product product;
+        if (getProductInsideCart(prodId) == null) {
+            count = 0;
+            product = productService.findProductById(prodId);
+        } else {
+            product = getProductInsideCart(prodId);
+            count = productCart.get(product);
+        }
+        prodDiscount = calculateProductDiscount(product);
+        incrementTotalDiscountAndGet(prodDiscount);
+        totalSum = totalSum.add(product.getPrice());
+        productCart.put(product, incrementCountAndGet());
+    }
+
+    public void removeProdCompletely(Long prodId) {
+        Product product = getProductInsideCart(prodId);
+        prodDiscount = calculateProductDiscount(product);
+        decrementTotalDiscount(prodDiscount, productCart.get(product));
+        int sum;
+        if (!totalSum.equals(BigDecimal.valueOf(0))) {
+            sum = (product.getPrice().intValue() * productCart.get(product));
+            totalSum = totalSum.subtract(BigDecimal.valueOf(sum));
+        }
+        productCart.remove(product);
 
     }
 
-    public Integer incrementDiscountAndGet(Integer prodDiscount) {
-        return discount += prodDiscount;
+    public void removeOneProd(Long prodId) {
+        Product product = getProductInsideCart(prodId);
+        count = productCart.get(product);
+        prodDiscount = calculateProductDiscount(product);
+        if (count != 1) {
+            productCart.replace(product, decrementCountAndGet());
+            decrementTotalDiscount(prodDiscount, 1);
+            if (!totalSum.equals(BigDecimal.valueOf(0))) {
+                totalSum = totalSum.subtract(product.getPrice());
+            }
+        }
     }
 
-    public Integer calculateDiscountAndGet(Integer prodDiscount, Integer count) {
-        return discount -= (prodDiscount * count);
+    private Product getProductInsideCart(@NotNull Long prodId) {
+        Product product;
+        product = productCart.keySet()
+                .stream()
+                .filter(p -> p.getId().equals(prodId))
+                .findFirst().orElse(null);
+
+        return product;
     }
 
+    public Integer incrementCountAndGet() {
+        return ++count;
+    }
 
     public Integer decrementCountAndGet() {
         return --count;
     }
 
-    public Integer incrementCountAndGet() {
-        return ++count;
+    public void incrementTotalDiscountAndGet(Integer prodDiscount) {
+        discount += prodDiscount;
+    }
+
+    public void decrementTotalDiscount(Integer prodDiscount, Integer count) {
+        discount -= (prodDiscount * count);
+    }
+
+    public int calculateProductDiscount(Product p) {
+        return p.getOldPrice() != null ? p.getOldPrice().subtract(p.getPrice()).intValue() : 0;
+
+    }
+
+    public Integer calculateTotalDiscount() {
+        discount = 0;
+        for (Product p : productCart.keySet()) {
+            prodDiscount = calculateProductDiscount(p);
+            discount += (prodDiscount * productCart.get(p));
+        }
+        return discount;
+    }
+
+    public void calculateTotalSum() {
+        int sum = 0;
+        for (Product p : productCart.keySet()) {
+            sum += (p.getPrice().intValue() * productCart.get(p));
+            totalSum = BigDecimal.valueOf(sum);
+        }
+    }
+
+    public Integer getProductsCount() {
+        AtomicReference<Integer> totalCount = new AtomicReference<>(0);
+        productCart.values().forEach(integer -> totalCount.updateAndGet(v -> v + integer));
+        return totalCount.get();
     }
 
 

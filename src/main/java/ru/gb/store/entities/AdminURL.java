@@ -15,7 +15,4 @@ public class AdminURL {
     private String url;
     private String action;
 
-    @ManyToOne
-    private AdminPanelBlock adminPanelBlock;
-
 }

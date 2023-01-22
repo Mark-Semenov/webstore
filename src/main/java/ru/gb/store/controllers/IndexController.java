@@ -13,7 +13,6 @@ import ru.gb.store.repositories.BrandRepository;
 import ru.gb.store.service.CartService;
 import ru.gb.store.service.CategoryService;
 import ru.gb.store.service.ProductService;
-import ru.gb.store.session.UserSessionCart;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +26,6 @@ public class IndexController {
     private final ProductService productService;
     private final CategoryService categoryService;
     private Page<Product> products;
-    private final UserSessionCart userSessionCart;
     private final BrandRepository brandRepository;
     private final CartService cartService;
     private final Map<String, String> filters = new HashMap<>();
@@ -35,7 +33,6 @@ public class IndexController {
     @ModelAttribute
     public void attributes(Model model) {
         model.addAttribute("categories", categoryService.getCategories());
-        model.addAttribute("cart", userSessionCart);
         model.addAttribute("brands", brandRepository.findAll());
     }
 
@@ -55,11 +52,13 @@ public class IndexController {
                                @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
                                @RequestParam(required = false, defaultValue = "", name = "search") String prodName,
                                @RequestParam(required = false, defaultValue = "", name = "minPrice") String minPrice,
-                               @RequestParam(required = false, defaultValue = "", name = "maxPrice") String maxPrice) {
+                               @RequestParam(required = false, defaultValue = "", name = "maxPrice") String maxPrice,
+                               @RequestParam(required = false, name = "brandName") String brandName) {
 
         filters.put("search", prodName);
         filters.put("minPrice", minPrice);
         filters.put("maxPrice", maxPrice);
+        filters.put("brandName", brandName);
 
         products = productService.getPageWithProducts(page, null, filters);
 
@@ -73,14 +72,20 @@ public class IndexController {
     public String showProductsByCategory(Model model,
                                          @PathVariable(required = false, name = "category") @NonNull String categoryName,
                                          @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
-                                         @RequestParam(required = false, defaultValue = "", value = "search") @NonNull String productName) {
+                                         @RequestParam(required = false, defaultValue = "", value = "search") @NonNull String productName,
+                                         @RequestParam(required = false, defaultValue = "", name = "minPrice") String minPrice,
+                                         @RequestParam(required = false, defaultValue = "", name = "maxPrice") String maxPrice,
+                                         @RequestParam(required = false, name = "brandName") String brandName) {
 
         filters.put("search", productName);
+        filters.put("minPrice", minPrice);
+        filters.put("maxPrice", maxPrice);
+        filters.put("brandName", brandName);
+
         if (!categoryName.isEmpty()) {
             Category category = categoryService.getCategories().stream().filter(c -> c.getName().equals(categoryName)).iterator().next();
             products = productService.getPageWithProducts(page, category, filters);
         }
-
         model.addAttribute("products", products);
         model.addAttribute("pageable", productService.getPageable());
         return "index";
@@ -93,9 +98,7 @@ public class IndexController {
                                    @RequestParam(required = false, defaultValue = "", name = "search") String search) {
 
         cartService.addToCart(prodId);
-
         return "redirect:/?page=" + page + "&search=" + search;
-
     }
 
 

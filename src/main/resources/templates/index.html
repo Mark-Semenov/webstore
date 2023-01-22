@@ -8,6 +8,14 @@
           crossorigin="anonymous"/>
     <link th:href="@{/css/style.css}" rel="stylesheet"/>
     <title>Online Store</title>
+    <script>
+        function findByBrand() {
+            document.getElementById("brandButton").click()
+        }
+        function findByPrice() {
+            document.getElementById("findByPriceButton").click()
+        }
+    </script>
 </head>
 
 <body>
@@ -33,29 +41,32 @@
                         </div>
                         <div class="input-group">
                             <label>
-                                <input type="search" name="maxPrice" step="any" placeholder="to"
+                                <input onsubmit="findByPrice()" type="search" name="maxPrice" step="any" placeholder="to"
                                        class="form-control">
                             </label>
                         </div>
                         <div>
-                            <button class="btn btn-primary" type="submit">Find</button>
+                            <button hidden id="findByPriceButton" class="btn btn-primary" type="submit">Find</button>
                         </div>
 
                     </form>
                 </div>
-
-                <div>
-                    <h5>CPU</h5>
-                    <div class="form-check" th:each="brand : ${brands}">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault1">
-                        <label th:text="${brand.title}" class="form-check-label" for="flexCheckDefault1"/>
-                    </div>
-                </div>
-                <div>
+                <!--filter by brand-->
+                <div th:if="${#request.getServletPath().equals('/categories/' + category)}">
                     <h5>Brands</h5>
-                    <div class="form-check" th:each="brand : ${brands}">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault2">
-                        <label th:text="${brand.title}" class="form-check-label" for="flexCheckDefault2"/>
+                    <div class="form-check">
+                        <form id="brandForm">
+                            <div th:each="brand : ${brands}">
+                                <input th:value="${brand.title}"
+                                       class="form-check-input"
+                                       type="radio"
+                                       name="brandName"
+                                       id="flexCheckDefault2"
+                                       onclick="findByBrand()"/>
+                                <label th:text="${brand.title}" class="form-check-label" for="flexCheckDefault2"/>
+                            </div>
+                            <button id="brandButton" hidden type="submit" class="btn btn-primary"/>
+                        </form>
                     </div>
                 </div>
             </div>
