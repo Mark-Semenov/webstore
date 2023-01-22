@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
+          crossorigin="anonymous"/>
+    <link th:href="@{/css/style.css}" rel="stylesheet"/>
+    <title>Cart</title>
+</head>
+<body>
+<div th:insert="~{menu :: menu}"></div>
+
+
+<div class="wrapper">
+
+    <div class="top container">
+
+        <div class="cart-heading">
+            <h3 th:if="${!cart.productCart.isEmpty()}">Cart</h3>
+            <h3 th:if="${cart.productCart.isEmpty()}">Cart is empty</h3>
+        </div>
+
+        <div class="cart-body">
+            <div class="cart-left-side">
+                <div class="card" th:each="product : ${prodInCart}">
+                    <div class="card-header">
+                        <h6 th:text="${product.getName}"/>
+                    </div>
+                    <div class="card-body cart">
+                        <div class="prod-img">
+                            <img th:src="@{'/images/'+ ${product.image}}" class="card-img-top cart-prod-image"
+                                 th:alt="${product.getName}">
+                        </div>
+                        <div class="product-description">
+                            <p class="card-text" th:text="${product.description}"/>
+                        </div>
+                        <div>
+                            <p th:text="${product.price} + ' $'"/>
+                            <p th:if="${product.oldPrice != null}" th:text="${product.oldPrice} + ' $'"
+                               style="text-decoration: line-through"/>
+                        </div>
+                        <div class="product-count">
+                            <a class="count-plus-minus" th:href="@{'/cart/remove?id=' + ${product.id}}">-</a>
+                            <input class="input-group input-prod-count" type="text"
+                                   th:placeholder="${prodAndCount.get(product).intValue()}">
+                            <a class="count-plus-minus" th:href="@{'/cart/add?id=' + ${product.id}}">+</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <a class="card-link" th:href="@{'/product?id=' + ${product.id}}" th:text="'More'"/>
+                        <a class="card-link" th:href="@{'/cart/delete?id=' + ${product.id}}" th:text="'Delete'"/>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${!cart.productCart.isEmpty()}" class="cart-right-side">
+                <div>
+                    <h3>Cart</h3>
+                    <p th:text="'Count of goods: ' + ${countOfProducts}"/>
+                    <p th:text="'Discount: ' + ${discount} + ' $'"/>
+                </div>
+                <div>
+                    <h3>Total sum</h3>
+                    <p th:text="${totalSum} + ' $'"/>
+                </div>
+                <div>
+                    <a th:href="@{'/cart/order'}" class="btn btn-primary">Checkout</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div th:insert="~{footer::footer}"></div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+</body>
+</html>
