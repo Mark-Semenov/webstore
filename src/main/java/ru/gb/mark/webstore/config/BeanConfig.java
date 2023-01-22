@@ -2,10 +2,13 @@ package ru.gb.mark.webstore.config;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.flyway.FlywayProperties;
+import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -16,15 +19,30 @@ public class BeanConfig {
 
     private final FlywayProperties properties;
 
+    @Value("${mail.username}")
+    private String mailUser;
+
+    @Value("${mail.pas}")
+    private String mailPas;
+
+
     private final String url;
     private final String username;
     private final String password;
 
-    public BeanConfig(FlywayProperties properties, Environment environment) {
+    private final JavaMailSender javaMailSender;
+    private final MailProperties mailProperties;
+
+    public BeanConfig(FlywayProperties properties,
+                      Environment environment,
+                      JavaMailSender javaMailSender,
+                      MailProperties mailProperties) {
         this.properties = properties;
         this.url = environment.getProperty("dburl");
         this.username = environment.getProperty("dblogin");
         this.password = environment.getProperty("dbpas");
+        this.javaMailSender = javaMailSender;
+        this.mailProperties = mailProperties;
     }
 
 
@@ -50,6 +68,11 @@ public class BeanConfig {
 
     @PostConstruct
     private void flywayProperties() {
+//        mailProperties.setHost("smtp.mail.ru");
+//        mailProperties.setPort(587);
+//        mailProperties.setProtocol("smtp");
+//        mailProperties.setPassword("jeiY66egkVATdnS1qvVf");
+//        mailProperties.setUsername("mark@ippeople.ru");
         properties.setUrl(url);
         properties.setUser(username);
         properties.setPassword(password);
