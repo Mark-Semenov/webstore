@@ -5,8 +5,7 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.util.List;
 
-
-//Builder
+//Builder pattern
 @Data
 public class UserWrapper {
 
